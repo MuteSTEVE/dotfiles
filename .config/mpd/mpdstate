@@ -1,0 +1,29 @@
+sw_volume: 40
+audio_device_state:1:pulse audio
+audio_device_state:1:my_fifo
+state: play
+current: 5
+time: 120.081000
+random: 0
+repeat: 1
+single: 1
+consume: 0
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:National Anthem of USSR.mp3
+1:English Anthem of USSR.mp3
+2:Stereo Hearts ft Adam Levine.mp3
+3:私はナンバーワン！.mp3
+4:House Of The Rising Sun.mp3
+5:Red Army is The Strongest.mp3
+6:We Are Young.mp3
+7:Believer.mp3
+8:Instrumental anthem of USSR .mp3
+9:Freie Deutsche Jugend.mp3
+10:All Star.mp3
+11:Powerful Anthem of USSR.mp3
+12:Soviet March.mp3
+13:Haus neues Berlin.mp3
+playlist_end
