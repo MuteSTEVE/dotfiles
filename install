@@ -1,17 +1,13 @@
 #!/bin/bash
 
-_HOME="/home/${whoami}"
-_DIRECTORY="$_HOME/dotfiles"
-
-cp -r _DIRECTORY/.config _HOME/
-cp _DIRECTORY/{.zshrc,.gitconfig} _HOME/
+cp -r ~/dotfiles/.config ~/
+cp ~/dotfiles/.zshrc ~/
 
 # installing packages from pacman.txt
 sudo pacman -Syu --noconfirm
-sudo pacman -S --needed --noconfirm $(comm -12 <(pacman -Slq | sort) <(sort $_DIRECTORY/pacman.txt))
+sudo pacman -S --needed --noconfirm - < ~/dotfiles/pacman.txt
 
 # yay
-yay -S --noconfirm nerd-fonts-git
 yay -S --noconfirm ttf-icomoon-feather 
 yay -S --noconfirm ttf-font-awesome  
 yay -S --noconfirm ttf-iosevka-nerd  
@@ -23,9 +19,12 @@ yay -S --noconfirm ttf-icomoon-feather
 yay -S --noconfirm siji-ttf
 yay -S --noconfirm orchis-theme
 yay -S --noconfirm papirus-icon-theme
-yay -S --noconfirm ttf-font-awesome acpi 
+yay -S --noconfirm ttf-font-awesome
 yay -S --noconfirm autotiling
 yay -S --noconfirm libreoffice
+yay -S --noconfirm python-lsp-all
+yay -S --noconfirm pyright
+yay -S --noconfirm acpi 
 
 # npm
 sudo npm i npm@latest -g

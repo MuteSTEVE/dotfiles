@@ -38,3 +38,8 @@ python-lsp-server
 ruff
 sxhkd
 flameshot
+librewolf
+htop
+rust
+ruff
+ruff-lsp
