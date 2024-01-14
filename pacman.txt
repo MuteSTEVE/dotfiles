@@ -43,3 +43,4 @@ htop
 rust
 ruff
 ruff-lsp
+tmux
