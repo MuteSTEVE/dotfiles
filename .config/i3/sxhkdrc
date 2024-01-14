@@ -15,7 +15,7 @@ super + p
 super + Return
   alacritty
 
-super + shift + e
+super +  e
   pcmanfm
 
 super + m
