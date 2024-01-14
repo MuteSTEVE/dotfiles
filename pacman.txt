@@ -44,3 +44,4 @@ rust
 ruff
 ruff-lsp
 tmux
+autotiling
