@@ -2,6 +2,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="archcraft-dwm"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
+export EDITOR=nvim
 
 fortune | cowsay
 
@@ -10,6 +11,10 @@ alias nvb='nvim ~/.bashrc'
 alias zrc='nvim ~/.zshrc'
 alias nvc='cd ~/.config/nvim/ ; nvim'
 alias lg='lazygit'
+alias cp='rsync --progress -auv'
+alias cdir='cd $(find -type d | fzf)'
+alias gp='find $HOME -type f | fzf | tr -d '\n' | xclip -selection c'
+alias ls='exa --long --all --grid --git --icons'
 
 alias tm='tmux'
 alias tk='tmux kill-server'
