@@ -110,7 +110,7 @@ else:
         elif percentleft < 60:
             return '<span foreground="#FFFF33" size="large"> </span>'
         elif percentleft < 70:
-            return '<span size="large"> </span>'
+            return '<span foreground="#FFFF33" size="large"> </span>'
         elif percentleft < 80:
             return '<span foreground="#FFFF66" size="large"> </span>'
         else:

@@ -90,6 +90,14 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
+#  ██  ██  
+# ████████ 
+#  ██  ██  
+# ████████ 
+#  ██  ██  
+# workspace
+workspace_layout tabbed
+
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
@@ -131,7 +139,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 bindsym $mod+Shift+c reload
 # restart i3 > killall 'watch' process > exec the 'watch' process again
 # WHY? To prevent duplicate 'watch' process, THERE CAN ONLY BE ONE!
-bindsym $mod+Shift+r exec killall watch ; restart ; exec nohup watch -n 60 nitrogen --set-zoom-fill --random ~/.config/i3/magallan --save > /dev/null 2>&1& 
+bindsym $mod+Shift+r exec killall watch ; restart
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -214,6 +222,7 @@ mode "$mode_gaps_inner" {
 	bindsym Escape mode "default"
 }
 
+
 mode "$mode_gaps_outer" {
 	bindsym plus  gaps outer current plus 5
 	bindsym minus gaps outer current minus 5
@@ -233,7 +242,6 @@ mode "$mode_gaps_outer" {
 # ████████ 
 #  ██  ██  
 # Autostart & always start
-exec_always --no-startup-id autotiling -w 1 2 3 4 5 6 7 8 9
 exec_always --no-startup-id fcitx
 exec_always --no-startup-id nohup watch -n 60 nitrogen --set-zoom-fill --random ~/.config/i3/magallan --save > /dev/null 2>&1& 
 # Keybind using sxhkd
