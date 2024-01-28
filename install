@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cp -r ~/dotfiles/.config ~/
-cp ~/dotfiles/.zshrc ~/
+cp ~/dotfiles/{.zshrc,.xsession,.xprofile,.xinitrc} ~/
 
 # installing packages from pacman.txt
 sudo pacman -Syu --noconfirm
