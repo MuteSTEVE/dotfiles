@@ -25,6 +25,11 @@ yay -S --noconfirm libreoffice
 yay -S --noconfirm python-lsp-all
 yay -S --noconfirm pyright
 yay -S --noconfirm acpi 
+yay -S pyright
+yay -S ttf-times-new-roman
+yay -S ttf-font-awesome
+yay -R ttf-ms-fonts
+yay -S ttf-ms-fonts
 
 # npm
 sudo npm i npm@latest -g
