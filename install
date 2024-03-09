@@ -5,31 +5,31 @@ cp ~/dotfiles/{.zshrc,.xsession,.xprofile,.xinitrc} ~/
 
 # installing packages from pacman.txt
 sudo pacman -Syu --noconfirm
-sudo pacman -S --needed --noconfirm - < ~/dotfiles/pacman.txt
+sudo pacman -S --noconfirm - < ~/dotfiles/pacman.txt
 
 # yay
-yay -S --noconfirm ttf-icomoon-feather 
-yay -S --noconfirm ttf-font-awesome  
-yay -S --noconfirm ttf-iosevka-nerd  
-yay -S --noconfirm ttf-fantasque-sans-mono   
+
+yay -S --noconfirm ttf-ms-fonts
+yay -S --noconfirm acpi 
+yay -S --noconfirm adobe-source-han-sans-jp-fonts
+yay -S --noconfirm autotiling
 yay -S --noconfirm noto-fonts   
-yay -S --noconfirm ttf-droid   
-yay -S --noconfirm terminus-font  
-yay -S --noconfirm ttf-icomoon-feather
-yay -S --noconfirm siji-ttf
+yay -S --noconfirm noto-fonts-emoji
 yay -S --noconfirm orchis-theme
 yay -S --noconfirm papirus-icon-theme
+yay -S --noconfirm siji-ttf
+yay -S --noconfirm terminus-font  
+yay -S --noconfirm ttf-droid   
+yay -S --noconfirm ttf-fantasque-sans-mono   
 yay -S --noconfirm ttf-font-awesome
-yay -S --noconfirm autotiling
-yay -S --noconfirm libreoffice
-yay -S --noconfirm python-lsp-all
-yay -S --noconfirm pyright
-yay -S --noconfirm acpi 
-yay -S pyright
-yay -S ttf-times-new-roman
-yay -S ttf-font-awesome
-yay -R ttf-ms-fonts
-yay -S ttf-ms-fonts
+yay -S --noconfirm ttf-font-awesome
+yay -S --noconfirm ttf-font-awesome  
+yay -S --noconfirm ttf-icomoon-feather
+yay -S --noconfirm ttf-icomoon-feather 
+yay -S --noconfirm ttf-iosevka-nerd  
+yay -S --noconfirm ttf-jetbrains-mono-nerd
+yay -S --noconfirm ttf-ms-fonts
+yay -S --noconfirm ttf-times-new-roman
 
 # npm
 sudo npm i npm@latest -g
@@ -42,12 +42,11 @@ sudo npm i phpactor -g
 systemctl --user enable mpd
 systemctl --user restart mpd
 
-# ohmyzsh
+# nvim-config
 cd
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-cd ~/.oh-my-zsh/themes
-git clone https://github.com/mrx04programmer/ZshTheme-ArchCraft/
-mv ZshTheme-ArchCraft/archcraft-dwm.zsh-theme $PWD
+git clone https://github.com/MuteSTEVE/nvim.git ~/.config/nvim/
 
+# TMUX tpm
 cd
-git clone https://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@github.com/MuteSTEVE/nvim.git ~/.config/nvim/
+mkdir -p ~/.config/tmux/plugins/tpm/
+git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm/tpm
