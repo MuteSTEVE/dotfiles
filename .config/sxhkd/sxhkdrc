@@ -15,7 +15,7 @@ super + p
 super + Return
   alacritty
 
-super +  e
+super +  shift + e
   pcmanfm
 
 super + m
@@ -25,10 +25,10 @@ super + g
   gpick
 
 super + shift + b
-  firefox
-
-super + shift + n
   librewolf
+
+super + b
+  firefox
 
 super + shift + v
   pavucontrol
