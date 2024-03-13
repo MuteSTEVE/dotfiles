@@ -1,0 +1,24 @@
+gnome*
+gnome-shell
+gnome-menus
+pop-de-gnome
+pop-default-settings
+pop-desktop
+pop-server
+gedit
+xterm
+gucharmap
+baobab
+gnome-terminal gnome-terminal-server
+gnome-terminal
+xterm uxterm
+gnome-info
+system-config-printer
+com.github.donadigo.eddy
+popsicle
+popsicle-gtk
+file-roller
+yelp
+simple-scan
+zenity
+gnome-terminal gnome-terminal-data

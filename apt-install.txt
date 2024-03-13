@@ -1,0 +1,24 @@
+i3
+alacritty
+dmenu
+pcmanfm
+gvfs
+qbittorrent
+unzip
+sxhkd
+rofi
+mpc ncmpcpp mpd
+steam
+fcitx
+fcitx-mozc
+npm
+tmux
+cowsay
+fortune-mod
+rsync
+picom
+fzf
+exa
+ranger
+ripgrep
+gpick
