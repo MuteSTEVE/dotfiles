@@ -23,6 +23,8 @@ alias gp='find $HOME -type f | fzf | tr -d '\n' | xclip -selection c'
 alias cc='cd $(find $HOME -type d | fzf)'
 alias cp='rsync --progress -auv'
 alias ls='exa --long --all --grid --icons'
+alias lsd='exa --long --all --grid --icons $(find $HOME -type d | fzf)'
+alias vimv='./~/.config/i3/script/vimv'
 
 # Arch
 alias pacman='sudo pacman --color auto'
