@@ -1,0 +1,53 @@
+env:
+  TERM: "xterm-256color"
+
+window:
+  opacity: 0.85
+
+font:
+  size: 9.5
+
+font_bold:
+  family: "hack"
+  style: "Bold"
+
+font_bold_italic:
+  family: "monospace"
+  style: "Bold Italic"
+
+font_italic:
+  family: "hack"
+  style: "Italic"
+
+font_normal:
+  family: "hack"
+  style: "Regular"
+
+colors:
+  primary:
+    background: "#1E2127"
+    foreground: "#F9F9F9"
+  bright:
+    black: "#545454"
+    blue: "#94bff3"
+    cyan: "#93e0e3"
+    green: "#8ae234"
+    magenta: "#b294bb"
+    red: "#fc5454"
+    white: "#ffffff"
+    yellow: "#fce94f"
+  normal:
+    black: "#3f3f3f"
+    blue: "#94bff3"
+    cyan: "#06989a"
+    green: "#4e9a06"
+    magenta: "#85678f"
+    red: "#cc0000"
+    white: "#dcdccc"
+    yellow: "#c4a000"
+
+keyboard:
+  bindings:
+    - action: "ToggleFullscreen"
+      key: "F11"
+

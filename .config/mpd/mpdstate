@@ -1,0 +1,21 @@
+sw_volume: 40
+audio_device_state:1:pulse audio
+audio_device_state:1:my_fifo
+state: play
+current: 2
+time: 120.081000
+random: 0
+repeat: 1
+single: 1
+consume: 0
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:Necromantic.mp3
+1:We Are Young.mp3
+2:私は No 1!.mp3
+3:WARNING×WARNING×WARNING.mp3
+4:Bad Apple.mp3
+5:Freie Deutsche Jugend.mp3
+playlist_end
