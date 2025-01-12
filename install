@@ -1,0 +1,21 @@
+#!/bin/bash
+
+patches=("BAR_LTSYMBOL_PATCH 1"
+	 "BAR_STATUS_PATCH 1"
+	 "BAR_SYSTRAY_PATCH 1"
+	 "BAR_TAGS_PATCH 1"
+	 "BAR_HEIGHT_PATCH 1"
+	 "ALWAYSCENTER_PATCH 1"
+	 "ATTACHBELOW_PATCH 1"
+	 "NO_TRANSPARENT_BORDERS_PATCH 1"
+	 "PERTAG_PATCH 1"
+	 "PERTAG_VANITYGAPS_PATCH 1"
+	 "VANITYGAPS_PATCH 1"
+	 "VANITYGAPS_MONOCLE_PATCH 1")
+
+patches_length=${#patches[@]}
+
+for (( i=0; i < ${patches_length}; i++));
+do
+	echo "ind: $i, val: ${patches[$i]}"
+done
