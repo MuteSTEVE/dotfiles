@@ -1,44 +1,54 @@
 #!/bin/bash
 
-dwm_configs=(
-	"static const unsigned int gappih         = 10;"
-	"static const unsigned int gappiv         = 10;"
-	"static const unsigned int gappoh         = 10;"
-	"static const unsigned int gappov         = 10;"
-	"static const int bar_height              = 20;"
-	"[DEFAULT_TAGS]        = { "一", "二", "三", "四", "五", "六", "七", "八", "九" },"
-)
+dwm_configs() {
+  local configs=(
+    "static const unsigned int gappih         = 10;"
+    "static const unsigned int gappiv         = 10;"
+    "static const unsigned int gappoh         = 10;"
+    "static const unsigned int gappov         = 10;"
+    "static const int bar_height              = 20;"
+    "[DEFAULT_TAGS]        = { "一", "二", "三", "四", "五", "六", "七", "八", "九" },"
+    "static const char *fonts[]          	 = { "Hack Nerd Font:size=10:style=Regular" };"
+    "static const char dmenufont[]       	 = "Hack Nerd Font:size=10:style=Regular";"
+  )
+}
 
-dwm_patches=(
-	"#define BAR_LTSYMBOL_PATCH 1"
-	"#define BAR_STATUS_PATCH 1"
-	"#define BAR_SYSTRAY_PATCH 1"
-	"#define BAR_TAGS_PATCH 1"
-	"#define BAR_HEIGHT_PATCH 1"
-	"#define ALWAYSCENTER_PATCH 1"
-	"#define ATTACHBELOW_PATCH 1"
-	"#define NO_TRANSPARENT_BORDERS_PATCH 1"
-	"#define PERTAG_PATCH 1"
-	"#define PERTAG_VANITYGAPS_PATCH 1"
-	"#define VANITYGAPS_PATCH 1"
-	"#define VANITYGAPS_MONOCLE_PATCH 1"
-)
+dwm_patches() {
+  local patches=(
+    "BAR_LTSYMBOL_PATCH"
+    "BAR_STATUS_PATCH"
+    "BAR_SYSTRAY_PATCH"
+    "BAR_TAGS_PATCH"
+    "BAR_HEIGHT_PATCH"
+    "ALWAYSCENTER_PATCH"
+    "ATTACHBELOW_PATCH"
+    "NO_TRANSPARENT_BORDERS_PATCH"
+    "PERTAG_PATCH"
+    "PERTAG_VANITYGAPS_PATCH"
+    "VANITYGAPS_PATCH"
+    "VANITYGAPS_MONOCLE_PATCH"
+  )
 
-st_patches=(
-	"#define ALPHA_PATCH 1"
-	"#define BOLD_IS_NOT_BRIGHT_PATCH 1"
-	"#define SCROLLBACK_PATCH 1"
-	"#define SINGLE_DRAWABLE_BUFFER_PATCH 1"
-	"#define W3M_PATCH 1"
-	"#define WIDE_GLYPHS_PATCH 1"
-)
+  local patches_len=${#patches[@]}
+  for (( i=0; i <${patches_len}; i++));
+  do
+    #Using another var, because bash will ignore the index of 0. I know, it's dumb
+    local patches_id=${patches[$i]}
+    sed -i "s/${patches_id[$i]} 0/${patches_id[$i]} 1/g" $PWD/example.txt
+  done
+}
 
-fonts=(
-	"static const char *fonts[]          	 = { "Hack Nerd Font:size=10:style=Regular" };"
-	"static const char dmenufont[]       	 = "Hack Nerd Font:size=10:style=Regular";"
-)
+st_patches() {
+  local patches=(
+    "ALPHA_PATCH"
+    "BOLD_IS_NOT_BRIGHT_PATCH"
+    "SCROLLBACK_PATCH"
+    "SINGLE_DRAWABLE_BUFFER_PATCH"
+    "W3M_PATCH"
+    "WIDE_GLYPHS_PATCH"
+  )
+}
 
-for (( i=0; i < ${#dwm_patches[@]}; i++));
-do
-	echo "ind: $i, val: ${dwm_patches[$i]}"
-done
+dwm_configs
+dwm_patches
+st_patches
