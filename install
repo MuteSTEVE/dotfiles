@@ -5,19 +5,6 @@ patch_dir=$(find $HOME -type d -name dotfiles)
 patches_def_h="$patch_dir/example.txt"
 status=( "0" "1")
 
-dwm_configs() {
-  local configs=(
-    "static const unsigned int gappih         = 10;"
-    "static const unsigned int gappiv         = 10;"
-    "static const unsigned int gappoh         = 10;"
-    "static const unsigned int gappov         = 10;"
-    "static const int bar_height              = 20;"
-    "[DEFAULT_TAGS]        = { "一", "二", "三", "四", "五", "六", "七", "八", "九" },"
-    "static const char *fonts[]          	 = { "Hack Nerd Font:size=10:style=Regular" };"
-    "static const char dmenufont[]       	 = "Hack Nerd Font:size=10:style=Regular";"
-  )
-}
-
 dwm_patches() {
   local patches=(
     "ALWAYSCENTER_PATCH"
@@ -45,6 +32,19 @@ dwm_patches() {
   done
 }
 
+dwm_configs() {
+  local configs=(
+    "static const unsigned int gappih         = 10;"
+    "static const unsigned int gappiv         = 10;"
+    "static const unsigned int gappoh         = 10;"
+    "static const unsigned int gappov         = 10;"
+    "static const int bar_height              = 20;"
+    "[DEFAULT_TAGS]        = { "一", "二", "三", "四", "五", "六", "七", "八", "九" },"
+    "static const char *fonts[]          	 = { "Hack Nerd Font:size=10:style=Regular" };"
+    "static const char dmenufont[]       	 = "Hack Nerd Font:size=10:style=Regular";"
+  )
+}
+
 st_patches() {
   local patches=(
     "ALPHA_PATCH"
@@ -56,6 +56,6 @@ st_patches() {
   )
 }
 
-dwm_configs
 dwm_patches
+dwm_configs
 st_patches
