@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Specify where dwm-flexipatch directory is located
+patch_dir=$(find $HOME -type d -name dotfiles)
+patches_def_h="$patch_dir/example.txt"
+status=( "0" "1")
+
 dwm_configs() {
   local configs=(
     "static const unsigned int gappih         = 10;"
@@ -15,18 +20,20 @@ dwm_configs() {
 
 dwm_patches() {
   local patches=(
+    "ALWAYSCENTER_PATCH"
+    "ATTACHBELOW_PATCH"
+    "BAR_AWESOMEBAR_PATCH"
+    "BAR_FANCYBAR_PATCH"
+    "BAR_HEIGHT_PATCH"
     "BAR_LTSYMBOL_PATCH"
     "BAR_STATUS_PATCH"
     "BAR_SYSTRAY_PATCH"
     "BAR_TAGS_PATCH"
-    "BAR_HEIGHT_PATCH"
-    "ALWAYSCENTER_PATCH"
-    "ATTACHBELOW_PATCH"
     "NO_TRANSPARENT_BORDERS_PATCH"
     "PERTAG_PATCH"
     "PERTAG_VANITYGAPS_PATCH"
-    "VANITYGAPS_PATCH"
     "VANITYGAPS_MONOCLE_PATCH"
+    "VANITYGAPS_PATCH"
   )
 
   local patches_len=${#patches[@]}
@@ -34,7 +41,7 @@ dwm_patches() {
   do
     #Using another var, because bash will ignore the index of 0. I know, it's dumb
     local patches_id=${patches[$i]}
-    sed -i "s/${patches_id[$i]} 0/${patches_id[$i]} 1/g" $PWD/example.txt
+    sed -i "s/${patches_id[$i]} ${status[0]}/${patches_id[$i]} ${status[1]}/g" $patches_def_h
   done
 }
 
