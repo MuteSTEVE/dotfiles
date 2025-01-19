@@ -28,7 +28,7 @@ dwm_patches() {
   do
     #Using another var, because bash will ignore the index of 0. I know, it's dumb
     local patches_id=${patches[$i]}
-    sed -i "s/${patches_id[$i]} ${status[0]}/${patches_id[$i]} ${status[1]}/g" $patches_def_h
+    sed -i "s/${patches_id[$i]} ${status[1]}/${patches_id[$i]} ${status[0]}/g" $patches_def_h
   done
 }
 
@@ -54,6 +54,14 @@ st_patches() {
     "W3M_PATCH"
     "WIDE_GLYPHS_PATCH"
   )
+
+  local patches_len=${#patches[@]}
+  for (( i=0; i <${patches_len}; i++));
+  do
+    #Using another var, because bash will ignore the index of 0. I know, it's dumb
+    local patches_id=${patches[$i]}
+    sed -i "s/${patches_id[$i]} ${status[1]}/${patches_id[$i]} ${status[0]}/g" $patches_def_h
+  done
 }
 
 dwm_patches
