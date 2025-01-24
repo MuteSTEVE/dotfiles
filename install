@@ -1,12 +1,36 @@
 #!/bin/bash
 
-# Specify where dwm-flexipatch directory is located
-patch_dir=$(find $HOME -type d -name dotfiles)
-patches_def_h="$patch_dir/example.txt"
-status=( "0" "1")
+# Clone from bakkeby flexi repos
+repos_url=(
+  "https://github.com/bakkeby/dwm-flexipatch"
+  "https://github.com/bakkeby/dmenu-flexipatch"
+  "https://github.com/bakkeby/st-flexipatch"
+)
+
+repos_len=${#repos_url[@]}
+for (( i=0; i<${repos_len}; i++ ));
+do
+  # Using another var, because bash will ignore the index of arr[0]. I know, it's dumb
+  repo=${repos_url[$i]}
+  dir_name=$(basename "$repo")
+  dir_path=$(find $HOME -type d -name "$dir_name")
+
+  #Check the existence of flexi directory
+  if [[ ! -d "$dir_path" ]]; then
+    echo "The $dir_name are nowhere to be found, cloning from the repo now....."
+    git clone "$repo" "$HOME/$dir_name" 2>/dev/null
+  else
+    echo "Found $dir_name at: $dir_path, cloning is not needed"
+  fi
+done
+
+## 0 = disable, 1 = enable; For convenience.
+## Change the status on each "sed" command for reverse operation
+status=( "0" "1" )
 
 dwm_patches() {
   local patches=(
+    ## Add the patches that you want
     "ALWAYSCENTER_PATCH"
     "ATTACHBELOW_PATCH"
     "BAR_AWESOMEBAR_PATCH"
@@ -23,26 +47,13 @@ dwm_patches() {
     "VANITYGAPS_PATCH"
   )
 
+  local dwm_dir=$(find $HOME -type d -name "dwm-flexipatch")
   local patches_len=${#patches[@]}
-  for (( i=0; i <${patches_len}; i++));
+  for (( i=0; i<${patches_len}; i++ ));
   do
-    #Using another var, because bash will ignore the index of 0. I know, it's dumb
-    local patches_id=${patches[$i]}
-    sed -i "s/${patches_id[$i]} ${status[1]}/${patches_id[$i]} ${status[0]}/g" $patches_def_h
+    local patch=${patches[$i]}
+    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_dir/patches.def.h"
   done
-}
-
-dwm_configs() {
-  local configs=(
-    "static const unsigned int gappih         = 10;"
-    "static const unsigned int gappiv         = 10;"
-    "static const unsigned int gappoh         = 10;"
-    "static const unsigned int gappov         = 10;"
-    "static const int bar_height              = 20;"
-    "[DEFAULT_TAGS]        = { "一", "二", "三", "四", "五", "六", "七", "八", "九" },"
-    "static const char *fonts[]          	 = { "Hack Nerd Font:size=10:style=Regular" };"
-    "static const char dmenufont[]       	 = "Hack Nerd Font:size=10:style=Regular";"
-  )
 }
 
 st_patches() {
@@ -55,15 +66,28 @@ st_patches() {
     "WIDE_GLYPHS_PATCH"
   )
 
+  local st_dir=$(find $HOME -type d -name "st-flexipatch")
   local patches_len=${#patches[@]}
-  for (( i=0; i <${patches_len}; i++));
+  for (( i=0; i<${patches_len}; i++ ));
   do
-    #Using another var, because bash will ignore the index of 0. I know, it's dumb
-    local patches_id=${patches[$i]}
-    sed -i "s/${patches_id[$i]} ${status[1]}/${patches_id[$i]} ${status[0]}/g" $patches_def_h
+    local patch=${patches[$i]}
+    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_dir/patches.def.h"
   done
 }
 
 dwm_patches
-dwm_configs
 st_patches
+
+### Future implementation
+#dwm_configs() {
+#  local configs=(
+#    "static const unsigned int gappih         = 10;"
+#    "static const unsigned int gappiv         = 10;"
+#    "static const unsigned int gappoh         = 10;"
+#    "static const unsigned int gappov         = 10;"
+#    "static const int bar_height              = 20;"
+#    "[DEFAULT_TAGS]        = { \"一\", \"二\", \"三\", \"四\", \"五\", \"六\", \"七\", \"八\", \"九\" };"
+#    "static const char *fonts[]              = { \"Hack Nerd Font:size=10:style=Regular\" };"
+#    "static const char dmenufont[]           = \"Hack Nerd Font:size=10:style=Regular\";"
+#  )
+#}
