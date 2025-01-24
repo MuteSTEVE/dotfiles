@@ -25,10 +25,14 @@ do
     echo "Found $dir_name at: $dir_path, cloning is not needed"
   fi
 done
+echo "
+------------------------------------------------ Patching out DWM ------------------------------------------------
+"
 
 ## 0 = disable, 1 = enable; For convenience.
 ## Change the status on each "sed" command for reverse operation
 status=( "0" "1" )
+current_dir="$PWD"
 
 dwm_patches() {
   local patches=(
@@ -56,6 +60,14 @@ dwm_patches() {
     local patch=${patches[$i]}
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_dir/patches.def.h"
   done
+
+  ## For some reason, it turn itself. I don't like having a padding on status bar
+  local ex_patch="BAR_PADDING_VANITYGAPS_PATCH"
+  sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_dir/patches.def.h"
+  cd "$dwm_dir"; sudo make clean install; cd "$current_dir"
+  echo "
+------------------------------------------------- Patching out ST ------------------------------------------------
+  "
 }
 
 st_patches() {
@@ -75,11 +87,19 @@ st_patches() {
     local patch=${patches[$i]}
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_dir/patches.def.h"
   done
+
+  cd "$st_dir"; sudo make clean install; cd "$current_dir"
 }
 
 dwm_patches
 st_patches
 
+echo "
+                                                     Operation
+--------------------------------- Please re-login from your current dwm session ----------------------------------
+                                                    Successfull!
+
+"
 ### Future implementation
 #dwm_configs() {
 #  local configs=(
