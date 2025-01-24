@@ -14,11 +14,13 @@ do
   repo=${repos_url[$i]}
   dir_name=$(basename "$repo")
   dir_path=$(find $HOME -type d -name "$dir_name")
+  suck_flexi="$HOME/suckless-flexipatch/" ## For easier directory navigation
 
   #Check the existence of flexi directory
   if [[ ! -d "$dir_path" ]]; then
     echo "The $dir_name are nowhere to be found, cloning from the repo now....."
-    git clone "$repo" "$HOME/$dir_name" 2>/dev/null
+    mkdir "$suck_flexi" 2>/dev/null
+    git clone "$repo" "$suck_flexi/$dir_name" 2>/dev/null
   else
     echo "Found $dir_name at: $dir_path, cloning is not needed"
   fi
