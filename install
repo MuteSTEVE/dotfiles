@@ -1,28 +1,35 @@
 #!/bin/bash
 
+echo "
+----------- Commence Operation ---------------
+"
+
 # Clone from bakkeby flexi repos
 repos_url=(
   "https://github.com/bakkeby/dwm-flexipatch"
   "https://github.com/bakkeby/dmenu-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
+  "https://github.com/bakkeby/flexipatch-finalizer"
 )
 
-repos_len=${#repos_url[@]}
-for (( i=0; i<${repos_len}; i++ ));
+for repo in ${repos_url[@]};
 do
-  # Using another var, because bash will ignore the index of arr[0]. I know, it's dumb
-  repo=${repos_url[$i]}
   dir_name=$(basename "$repo")
-  dir_path=$(find $HOME -type d -name "$dir_name")
-  suck_flexi="$HOME/suckless-flexipatch/" ## For easier directory navigation
+  dir_path=$(find "$HOME" -type d -name "$dir_name")
 
-  #Check the existence of flexi directory
+  # For easier navigation
+  suck_flex="$HOME/suckless-flexipatch/"
+  if [[ ! -d "$suck_flex" ]]; then
+    mkdir -p "$suck_flex" 2>/dev/null
+  fi
+
+  # Check the existence of the flexipatch directory
   if [[ ! -d "$dir_path" ]]; then
-    echo "The $dir_name are nowhere to be found, cloning from the repo now....."
-    mkdir "$suck_flexi" 2>/dev/null
-    git clone "$repo" "$suck_flexi/$dir_name" 2>/dev/null
+    echo "The $dir_name is nowhere to be found, cloning the repo now..."
+    git clone "$repo" "$suck_flex/$dir_name" 2>/dev/null
   else
-    echo "Found $dir_name at: $dir_path, cloning is not needed"
+    echo "Found $dir_name at: $dir_path, moving to $suck_flex"
+    mv "$dir_path" "$suck_flex/$dir_name"
   fi
 done
 
@@ -53,18 +60,20 @@ dwm_patches() {
     "VANITYGAPS_MONOCLE_PATCH"
     "VANITYGAPS_PATCH"
   )
-
+  local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" )
   local dwm_dir=$(find $HOME -type d -name "dwm-flexipatch")
-  local patches_len=${#patches[@]}
-  for (( i=0; i<${patches_len}; i++ ));
+
+  for patch in ${patches[@]};
   do
-    local patch=${patches[$i]}
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_dir/patches.def.h"
   done
 
-  ## For some reason, it turn itself. I don't like having a padding on status bar
-  local ex_patch="BAR_PADDING_VANITYGAPS_PATCH"
-  sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_dir/patches.def.h"
+  ## For some reason, it turn on by itself. I don't like having a padding on status bar
+  for ex_patch in ${ex_patches[@]}
+  do
+    sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_dir/patches.def.h"
+  done
+
   cd "$dwm_dir"; sudo make clean install; cd "$current_dir"
 }
 
@@ -83,10 +92,8 @@ st_patches() {
   )
 
   local st_dir=$(find $HOME -type d -name "st-flexipatch")
-  local patches_len=${#patches[@]}
-  for (( i=0; i<${patches_len}; i++ ));
+  for patch in ${patches[@]};
   do
-    local patch=${patches[$i]}
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_dir/patches.def.h"
   done
 
