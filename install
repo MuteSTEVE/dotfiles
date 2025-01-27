@@ -7,13 +7,11 @@ echo "
 # Clone from bakkeby flexi repos
 repos_url=(
   "https://github.com/bakkeby/dwm-flexipatch"
-  "https://github.com/bakkeby/dmenu-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
-  "https://github.com/bakkeby/flexipatch-finalizer"
+  "https://github.com/bakkeby/dmenu-flexipatch"
 )
 
-for repo in ${repos_url[@]};
-do
+for repo in ${repos_url[@]}; do
   dir_name=$(basename "$repo")
   dir_path=$(find "$HOME" -type d -name "$dir_name")
 
@@ -61,16 +59,14 @@ dwm_patches() {
     "VANITYGAPS_PATCH"
   )
   local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" )
-  local dwm_dir=$(find $HOME -type d -name "dwm-flexipatch")
+  dwm_dir=$(find $HOME -type d -name "dwm-flexipatch")
 
-  for patch in ${patches[@]};
-  do
+  for patch in ${patches[@]}; do
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_dir/patches.def.h"
   done
 
   ## For some reason, it turn on by itself. I don't like having a padding on status bar
-  for ex_patch in ${ex_patches[@]}
-  do
+  for ex_patch in ${ex_patches[@]}; do
     sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_dir/patches.def.h"
   done
 
@@ -91,9 +87,8 @@ st_patches() {
     "WIDE_GLYPHS_PATCH"
   )
 
-  local st_dir=$(find $HOME -type d -name "st-flexipatch")
-  for patch in ${patches[@]};
-  do
+  st_dir=$(find $HOME -type d -name "st-flexipatch")
+  for patch in ${patches[@]}; do
     sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_dir/patches.def.h"
   done
 
@@ -108,6 +103,7 @@ echo "
  Please re-login from your current dwm session
                Successfull! -------------------
 "
+
 ### Future implementation
 #dwm_configs() {
 #  local configs=(
