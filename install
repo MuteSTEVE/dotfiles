@@ -1,48 +1,48 @@
 #!/bin/bash
 
 echo "
------------ Commence Operation ---------------
+----------- Commence Operation ----------------
 "
+
+## 0 = disable, 1 = enable; For convenience.
+status=( "0" "1" )
+current_DIR="$PWD"
+flexi_DIR="$HOME/suckless-flexipatch"
+out_DIR="$flexi_DIR/output"
+mkdir -p "$flexi_DIR" "$out_DIR"
 
 # Clone from bakkeby flexi repos
 repos_url=(
   "https://github.com/bakkeby/dwm-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
   "https://github.com/bakkeby/dmenu-flexipatch"
+  "https://github.com/bakkeby/flexipatch-finalizer"
 )
 
-for repo in ${repos_url[@]}; do
-  dir_name=$(basename "$repo")
-  dir_path=$(find "$HOME" -type d -name "$dir_name")
+# Create the necessary directory
+for repo in "${repos_url[@]}"; do
+  repo_name=$(basename "$repo")
+  repo_DIR="$flexi_DIR/$repo_name"
 
-  # For easier navigation
-  suck_flex="$HOME/suckless-flexipatch/"
-  if [[ ! -d "$suck_flex" ]]; then
-    mkdir -p "$suck_flex" 2>/dev/null
-  fi
-
-  # Check the existence of the flexipatch directory
-  if [[ ! -d "$dir_path" ]]; then
-    echo "The $dir_name is nowhere to be found, cloning the repo now..."
-    git clone "$repo" "$suck_flex/$dir_name" 2>/dev/null
+  if [[ ! -d "$repo_DIR" ]]; then
+    echo "Cloning $repo_name..."
+    git clone "$repo" "$repo_DIR" 2>/dev/null
   else
-    echo "Found $dir_name at: $dir_path, moving to $suck_flex"
-    mv "$dir_path" "$suck_flex/$dir_name"
+    echo "$repo_name already exist, skipping clone."
   fi
 done
 
-## 0 = disable, 1 = enable; For convenience.
-## Change the status on each "sed" command for reverse operation
-status=( "0" "1" )
-current_dir="$PWD"
+# Define the DIRectory
+dwm_DIR="$flexi_DIR/dwm-flexipatch"
+st_DIR="$flexi_DIR/st-flexipatch"
+fin_DIR="$flexi_DIR/flexipatch-finalizer"
 
 dwm_patches() {
   echo "
------------- Patching out DWM ----------------
+------------ Patching out DWM -----------------
   "
 
   local patches=(
-    ## Add the patches that you want
     "ALWAYSCENTER_PATCH"
     "ATTACHBELOW_PATCH"
     "BAR_AWESOMEBAR_PATCH"
@@ -52,6 +52,7 @@ dwm_patches() {
     "BAR_STATUS_PATCH"
     "BAR_SYSTRAY_PATCH"
     "BAR_TAGS_PATCH"
+    "MOVESTACK_PATCH"
     "NO_TRANSPARENT_BORDERS_PATCH"
     "PERTAG_PATCH"
     "PERTAG_VANITYGAPS_PATCH"
@@ -59,23 +60,29 @@ dwm_patches() {
     "VANITYGAPS_PATCH"
   )
   local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" )
-  dwm_dir=$(find $HOME -type d -name "dwm-flexipatch")
 
-  for patch in ${patches[@]}; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_dir/patches.def.h"
+  for patch in "${patches[@]}"; do
+    if [[ -f "$dwm_DIR/patches.def.h" ]]; then
+      sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_DIR/patches.def.h"
+    else
+      echo "Warning: patches.def.h not found in $dwm_DIR"
+    fi
   done
 
-  ## For some reason, it turn on by itself. I don't like having a padding on status bar
-  for ex_patch in ${ex_patches[@]}; do
-    sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_dir/patches.def.h"
+  for ex_patch in "${ex_patches[@]}"; do
+    if [[ -f "$dwm_DIR/patches.def.h" ]]; then
+      sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_DIR/patches.def.h"
+    else
+      echo "Warning: patches.def.h not found in $dwm_DIR"
+    fi
   done
 
-  cd "$dwm_dir"; sudo make clean install; cd "$current_dir"
+  cd "$dwm_DIR" && sudo make clean install && cd "$current_DIR"
 }
 
 st_patches() {
   echo "
--------------- Patching out ST ----------------
+-------------- Patching out ST -----------------
   "
 
   local patches=(
@@ -87,21 +94,41 @@ st_patches() {
     "WIDE_GLYPHS_PATCH"
   )
 
-  st_dir=$(find $HOME -type d -name "st-flexipatch")
-  for patch in ${patches[@]}; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_dir/patches.def.h"
+  for patch in "${patches[@]}"; do
+    if [[ -f "$st_DIR/patches.def.h" ]]; then
+      sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_DIR/patches.def.h"
+    else
+      echo "Warning: patches.def.h not found in $st_DIR"
+    fi
   done
 
-  cd "$st_dir"; sudo make clean install; cd "$current_dir"
+  cd "$st_DIR" && sudo make clean install && cd "$current_DIR"
+}
+
+finalizer() {
+  echo "
+--------------- Finalizer ----------------------
+  "
+
+  local fin="$fin_DIR/flexipatch-finalizer.sh"
+  local dwm_OUT="$out_DIR/dwm"
+  local st_OUT="$out_DIR/st"
+
+  bash "$fin" -r -d "$dwm_DIR" -o "$dwm_OUT"
+  bash "$fin" -r -d "$st_DIR" -o "$st_OUT"
+
+  echo "Patched dwm at: $dwm_OUT"
+  echo "Patched st at: $st_OUT"
 }
 
 dwm_patches
 st_patches
+finalizer
 
 echo "
 --------------- Operation
- Please re-login from your current dwm session
-               Successfull! -------------------
+ Please re-login from your current dwm session!
+               Successfull ---------------------
 "
 
 ### Future implementation
