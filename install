@@ -9,7 +9,12 @@ status=( "0" "1" )
 current_DIR="$PWD"
 flexi_DIR="$HOME/suckless-flexipatch"
 out_DIR="$flexi_DIR/output"
-mkdir -p "$flexi_DIR" "$out_DIR"
+
+for DIR in "$flexi_DIR" "$out_DIR"; do
+  if [[ ! -d "$DIR" ]]; then
+    mkdir -p "$flexi_DIR" "$out_DIR"
+  fi
+done
 
 # Clone from bakkeby flexi repos
 repos_url=(
@@ -59,22 +64,14 @@ dwm_patches() {
     "VANITYGAPS_MONOCLE_PATCH"
     "VANITYGAPS_PATCH"
   )
-  local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" )
+  local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" ) ## ex = exclude
 
   for patch in "${patches[@]}"; do
-    if [[ -f "$dwm_DIR/patches.def.h" ]]; then
-      sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_DIR/patches.def.h"
-    else
-      echo "Warning: patches.def.h not found in $dwm_DIR"
-    fi
+    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_DIR/patches.def.h"
   done
 
   for ex_patch in "${ex_patches[@]}"; do
-    if [[ -f "$dwm_DIR/patches.def.h" ]]; then
-      sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_DIR/patches.def.h"
-    else
-      echo "Warning: patches.def.h not found in $dwm_DIR"
-    fi
+    sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_DIR/patches.def.h"
   done
 
   cd "$dwm_DIR" && sudo make clean install && cd "$current_DIR"
@@ -95,11 +92,7 @@ st_patches() {
   )
 
   for patch in "${patches[@]}"; do
-    if [[ -f "$st_DIR/patches.def.h" ]]; then
-      sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_DIR/patches.def.h"
-    else
-      echo "Warning: patches.def.h not found in $st_DIR"
-    fi
+    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_DIR/patches.def.h"
   done
 
   cd "$st_DIR" && sudo make clean install && cd "$current_DIR"
