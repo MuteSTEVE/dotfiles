@@ -7,9 +7,9 @@ echo -e "\n--------------- Commence Operation --------------------\n"
 readonly DISABLE=0
 readonly ENABLE=1
 
-readonly INFO=$(echo -e "[\e[1;34mINFO\e[0m]")
-readonly ERROR=$(echo -e "[\e[1;31mERROR\e[0m]")
-readonly SUCCESS=$(echo -e "[\e[1;32mSUCCESS\e[0m]")
+readonly INFO=$(echo -e " [INFO]")
+readonly ERROR=$(echo -e " [ERROR]")
+readonly SUCCESS=$(echo -e " [SUCCESS]")
 
 readonly CURRENT_DIR="$PWD"
 readonly FLEXI_DIR="${HOME}/suckless-flexipatch"
