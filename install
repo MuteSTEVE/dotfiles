@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -eo pipefail  # Exit on error and pipe failures
-echo -e "\n----------- Commence Operation ----------------\n"
+echo -e "\n--------------- Commence Operation --------------------\n"
 
 # Configurations
 readonly DISABLE=0
@@ -19,20 +19,20 @@ readonly REPOS_URL=(
 # Create necessary directories
 mkdir -p "${FLEXI_DIR}" "${OUT_DIR}"
 
+# Clone the repos
 clone_repositories() {
-  echo -e "\n--- Cloning repositories ---\n"
   for repo_url in "${REPOS_URL[@]}"; do
     local repo_name=$(basename "${repo_url}")
     local repo_dir="${FLEXI_DIR}/${repo_name}"
 
     if [[ -d "${repo_dir}" ]]; then
-      echo "[INFO] ${repo_name} already exists, skipping clone."
+      echo " [INFO] ${repo_name} already exists, skipping clone."
       continue
     fi
 
     echo "Cloning ${repo_name}..."
     if ! git clone -q "${repo_url}" "${repo_dir}"; then
-      echo "[ERROR] Failed to clone ${repo_name}" >&2
+      echo " [ERROR] Failed to clone ${repo_name}" >&2
       exit 1
     fi
   done
@@ -45,7 +45,7 @@ apply_patches() {
   local config_file="${target_dir}/patches.def.h"
 
   if [[ ! -f "${config_file}" ]]; then
-    echo "[ERROR] Config file not found: ${config_file}" >&2
+    echo " [ERROR] patches.def.h not found: ${config_file}" >&2
     exit 1
   fi
 
@@ -56,20 +56,21 @@ apply_patches() {
 
 build_and_install() {
   local target_dir="$1"
-  echo -e "\nBuilding and installing ${target_dir}..."
 
   pushd "${target_dir}" > /dev/null || exit 1
   sudo make clean > /dev/null
   if ! sudo make install; then
-    echo "[ERROR] Failed to install ${target_dir}" >&2
+    echo " [ERROR] Failed to install ${target_dir}" >&2
     popd > /dev/null || exit 1
     exit 1
   fi
   popd > /dev/null || exit 1
+
+  echo -e "\n [SUCCESS] Patching and building ${target_dir}"
 }
 
 dwm_patches() {
-  echo -e "\n------------ Patching DWM -----------------\n"
+  echo -e "\n------------------ Patching DWM -----------------------\n"
 
   local dwm_dir="${FLEXI_DIR}/dwm-flexipatch"
   local -a patches=(
@@ -102,7 +103,7 @@ dwm_patches() {
 }
 
 st_patches() {
-  echo -e "\n-------------- Patching ST -----------------\n"
+  echo -e "\n------------------ Patching ST ------------------------\n"
 
   local st_dir="${FLEXI_DIR}/st-flexipatch"
   local -a patches=(
@@ -119,7 +120,7 @@ st_patches() {
 }
 
 finalizer() {
-  echo -e "\n--------------- Finalizer ----------------------\n"
+  echo -e "\n------------------- Finalizer -------------------------\n"
 
   local fin_dir="${FLEXI_DIR}/flexipatch-finalizer"
   local finalizer_script="${fin_dir}/flexipatch-finalizer.sh"
@@ -127,16 +128,16 @@ finalizer() {
   local st_out="${OUT_DIR}/st"
 
   if [[ ! -x "${finalizer_script}" ]]; then
-    echo "[ERROR] Finalizer script not found or not executable" >&2
+    echo " [ERROR] Finalizer script not found or not executable" >&2
     exit 1
   fi
 
   "${finalizer_script}" -r -d "${FLEXI_DIR}/dwm-flexipatch" -o "${dwm_out}"
   "${finalizer_script}" -r -d "${FLEXI_DIR}/st-flexipatch" -o "${st_out}"
 
-  echo -e "\n[SUCCESS] Build output:"
-  echo "DWM: ${dwm_out}"
-  echo "ST:  ${st_out}"
+  echo " [SUCCESS] Build output:"
+  echo "  DWM: ${dwm_out}"
+  echo "  ST : ${st_out}"
 }
 
 # Main execution flow
@@ -145,4 +146,4 @@ dwm_patches
 st_patches
 finalizer
 
-echo -e "\n[SUCCESS] Operation completed successfully\n"
+echo -e "\n [SUCCESS] Operation successfull, please re-login\n"
