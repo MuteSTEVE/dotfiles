@@ -6,9 +6,15 @@ echo -e "\n--------------- Commence Operation --------------------\n"
 # Configurations
 readonly DISABLE=0
 readonly ENABLE=1
+
+readonly INFO=$(echo -e "[\e[1;34mINFO\e[0m]")
+readonly ERROR=$(echo -e "[\e[1;31mERROR\e[0m]")
+readonly SUCCESS=$(echo -e "[\e[1;32mSUCCESS\e[0m]")
+
 readonly CURRENT_DIR="$PWD"
 readonly FLEXI_DIR="${HOME}/suckless-flexipatch"
 readonly OUT_DIR="${FLEXI_DIR}/output"
+
 readonly REPOS_URL=(
   "https://github.com/bakkeby/dwm-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
@@ -26,7 +32,7 @@ clone_repositories() {
     local repo_dir="${FLEXI_DIR}/${repo_name}"
 
     if [[ -d "${repo_dir}" ]]; then
-      echo " [INFO] ${repo_name} already exists, skipping clone."
+      echo " ${INFO} ${repo_name} already exists, skipping clone."
       continue
     fi
 
@@ -66,7 +72,7 @@ build_and_install() {
   fi
   popd > /dev/null || exit 1
 
-  echo -e "\n [SUCCESS] Patching and building ${target_dir}"
+  echo -e "\n ${SUCCESS} Patching and building ${target_dir}"
 }
 
 dwm_patches() {
@@ -135,7 +141,7 @@ finalizer() {
   "${finalizer_script}" -r -d "${FLEXI_DIR}/dwm-flexipatch" -o "${dwm_out}"
   "${finalizer_script}" -r -d "${FLEXI_DIR}/st-flexipatch" -o "${st_out}"
 
-  echo " [SUCCESS] Build output:"
+  echo " ${SUCCESS} Build output:"
   echo "  DWM: ${dwm_out}"
   echo "  ST : ${st_out}"
 }
@@ -146,4 +152,4 @@ dwm_patches
 st_patches
 finalizer
 
-echo -e "\n [SUCCESS] Operation successfull, please re-login\n"
+echo -e "\n ${SUCCESS} Operation successfull, please re-login\n"
