@@ -1,53 +1,78 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-echo "
------------ Commence Operation ----------------
-"
+set -eo pipefail  # Exit on error and pipe failures
+echo -e "\n----------- Commence Operation ----------------\n"
 
-## 0 = disable, 1 = enable; For convenience.
-status=( "0" "1" )
-current_DIR="$PWD"
-flexi_DIR="$HOME/suckless-flexipatch"
-out_DIR="$flexi_DIR/output"
-
-for DIR in "$flexi_DIR" "$out_DIR"; do
-  if [[ ! -d "$DIR" ]]; then
-    mkdir -p "$flexi_DIR" "$out_DIR"
-  fi
-done
-
-# Clone from bakkeby flexi repos
-repos_url=(
+# Configurations
+readonly DISABLE=0
+readonly ENABLE=1
+readonly CURRENT_DIR="$PWD"
+readonly FLEXI_DIR="${HOME}/suckless-flexipatch"
+readonly OUT_DIR="${FLEXI_DIR}/output"
+readonly REPOS_URL=(
   "https://github.com/bakkeby/dwm-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
   "https://github.com/bakkeby/dmenu-flexipatch"
   "https://github.com/bakkeby/flexipatch-finalizer"
 )
 
-# Create the necessary directory
-for repo in "${repos_url[@]}"; do
-  repo_name=$(basename "$repo")
-  repo_DIR="$flexi_DIR/$repo_name"
+# Create necessary directories
+mkdir -p "${FLEXI_DIR}" "${OUT_DIR}"
 
-  if [[ ! -d "$repo_DIR" ]]; then
-    echo "Cloning $repo_name..."
-    git clone "$repo" "$repo_DIR" 2>/dev/null
-  else
-    echo "$repo_name already exist, skipping clone."
+clone_repositories() {
+  echo -e "\n--- Cloning repositories ---\n"
+  for repo_url in "${REPOS_URL[@]}"; do
+    local repo_name=$(basename "${repo_url}")
+    local repo_dir="${FLEXI_DIR}/${repo_name}"
+
+    if [[ -d "${repo_dir}" ]]; then
+      echo "[INFO] ${repo_name} already exists, skipping clone."
+      continue
+    fi
+
+    echo "Cloning ${repo_name}..."
+    if ! git clone -q "${repo_url}" "${repo_dir}"; then
+      echo "[ERROR] Failed to clone ${repo_name}" >&2
+      exit 1
+    fi
+  done
+}
+
+apply_patches() {
+  local target_dir="$1"
+  shift
+  local -a patches=("$@")
+  local config_file="${target_dir}/patches.def.h"
+
+  if [[ ! -f "${config_file}" ]]; then
+    echo "[ERROR] Config file not found: ${config_file}" >&2
+    exit 1
   fi
-done
 
-# Define the DIRectory
-dwm_DIR="$flexi_DIR/dwm-flexipatch"
-st_DIR="$flexi_DIR/st-flexipatch"
-fin_DIR="$flexi_DIR/flexipatch-finalizer"
+  for patch in "${patches[@]}"; do
+    sed -i.bak "s/^${patch} ${DISABLE}$/${patch} ${ENABLE}/" "${config_file}"
+  done
+}
+
+build_and_install() {
+  local target_dir="$1"
+  echo -e "\nBuilding and installing ${target_dir}..."
+
+  pushd "${target_dir}" > /dev/null || exit 1
+  sudo make clean > /dev/null
+  if ! sudo make install; then
+    echo "[ERROR] Failed to install ${target_dir}" >&2
+    popd > /dev/null || exit 1
+    exit 1
+  fi
+  popd > /dev/null || exit 1
+}
 
 dwm_patches() {
-  echo "
------------- Patching out DWM -----------------
-  "
+  echo -e "\n------------ Patching DWM -----------------\n"
 
-  local patches=(
+  local dwm_dir="${FLEXI_DIR}/dwm-flexipatch"
+  local -a patches=(
     "ALWAYSCENTER_PATCH"
     "ATTACHBELOW_PATCH"
     "BAR_AWESOMEBAR_PATCH"
@@ -64,25 +89,23 @@ dwm_patches() {
     "VANITYGAPS_MONOCLE_PATCH"
     "VANITYGAPS_PATCH"
   )
-  local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" ) ## ex = exclude
+  local -a ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" )
 
-  for patch in "${patches[@]}"; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_DIR/patches.def.h"
-  done
+  apply_patches "${dwm_dir}" "${patches[@]}"
 
+  # Disable excluded patches
   for ex_patch in "${ex_patches[@]}"; do
-    sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_DIR/patches.def.h"
+    sed -i.bak "s/^${ex_patch} ${ENABLE}$/${ex_patch} ${DISABLE}/" "${dwm_dir}/patches.def.h"
   done
 
-  cd "$dwm_DIR" && sudo make clean install && cd "$current_DIR"
+  build_and_install "${dwm_dir}"
 }
 
 st_patches() {
-  echo "
--------------- Patching out ST -----------------
-  "
+  echo -e "\n-------------- Patching ST -----------------\n"
 
-  local patches=(
+  local st_dir="${FLEXI_DIR}/st-flexipatch"
+  local -a patches=(
     "ALPHA_PATCH"
     "BOLD_IS_NOT_BRIGHT_PATCH"
     "SCROLLBACK_PATCH"
@@ -91,51 +114,35 @@ st_patches() {
     "WIDE_GLYPHS_PATCH"
   )
 
-  for patch in "${patches[@]}"; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_DIR/patches.def.h"
-  done
-
-  cd "$st_DIR" && sudo make clean install && cd "$current_DIR"
+  apply_patches "${st_dir}" "${patches[@]}"
+  build_and_install "${st_dir}"
 }
 
 finalizer() {
-  echo "
---------------- Finalizer ----------------------
-  "
+  echo -e "\n--------------- Finalizer ----------------------\n"
 
-  local fin="$fin_DIR/flexipatch-finalizer.sh"
-  local dwm_OUT="$out_DIR/dwm"
-  local st_OUT="$out_DIR/st"
+  local fin_dir="${FLEXI_DIR}/flexipatch-finalizer"
+  local finalizer_script="${fin_dir}/flexipatch-finalizer.sh"
+  local dwm_out="${OUT_DIR}/dwm"
+  local st_out="${OUT_DIR}/st"
 
-  bash "$fin" -r -d "$dwm_DIR" -o "$dwm_OUT"
-  bash "$fin" -r -d "$st_DIR" -o "$st_OUT"
+  if [[ ! -x "${finalizer_script}" ]]; then
+    echo "[ERROR] Finalizer script not found or not executable" >&2
+    exit 1
+  fi
 
-  echo "Patched dwm at: $dwm_OUT"
-  echo "Patched st at: $st_OUT"
+  "${finalizer_script}" -r -d "${FLEXI_DIR}/dwm-flexipatch" -o "${dwm_out}"
+  "${finalizer_script}" -r -d "${FLEXI_DIR}/st-flexipatch" -o "${st_out}"
+
+  echo -e "\n[SUCCESS] Build output:"
+  echo "DWM: ${dwm_out}"
+  echo "ST:  ${st_out}"
 }
 
+# Main execution flow
+clone_repositories
 dwm_patches
 st_patches
 finalizer
 
-echo "
---------------- Operation
- Please re-login from your current dwm session!
-               Successfull ---------------------
-
- By: MuteSTEVE
-"
-
-### Future implementation
-#dwm_configs() {
-#  local configs=(
-#    "static const unsigned int gappih         = 10;"
-#    "static const unsigned int gappiv         = 10;"
-#    "static const unsigned int gappoh         = 10;"
-#    "static const unsigned int gappov         = 10;"
-#    "static const int bar_height              = 20;"
-#    "[DEFAULT_TAGS]        = { \"一\", \"二\", \"三\", \"四\", \"五\", \"六\", \"七\", \"八\", \"九\" };"
-#    "static const char *fonts[]              = { \"Hack Nerd Font:size=10:style=Regular\" };"
-#    "static const char dmenufont[]           = \"Hack Nerd Font:size=10:style=Regular\";"
-#  )
-#}
+echo -e "\n[SUCCESS] Operation completed successfully\n"
