@@ -1,17 +1,14 @@
-@define-color active-background #64727D;
+@import '../../.cache/wal/colors-waybar.css';
 @define-color arch #89DCEB;
-@define-color background #222222;
-@define-color no transparent;
-@define-color white #FFFFFF;
 
 * {
   border-radius: 10px;
   font-family: "JetbrainsMono Nerd Font";
   font-size: 15px;
-  color: @white;
+  color: @cursor;
 }
 window#waybar {
-  background: @no;
+  background: transparent;
 }
 
 #backlight,
@@ -52,12 +49,12 @@ window#waybar {
   margin: 4px 3px;
   background: @background;
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: all 0.1s ease-in-out;
 }
 #taskbar button.active,
 #taskbar button:hover {
-  background: @active-background;
+  background: @color1;
 }
 
 #workspaces {
@@ -67,15 +64,13 @@ window#waybar {
 #workspaces button {
   padding: 0px 5px;
   margin: 4px 3px;
-  background: @background;
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: 5px;
   transition: all 0.1s ease-in-out;
 }
-
 #workspaces button.active,
 #workspaces button:hover {
-  background: @active-background;
+  background: @color1;
 }
 #workspaces button.active {
   min-width: 40px;
