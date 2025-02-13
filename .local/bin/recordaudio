@@ -1,0 +1,13 @@
+#!/bin/sh
+
+DIR="$HOME/Audio"
+DATE=$(date "+%G-%m-%d")
+FILE="${DIR}/${DATE}.mp3"
+
+mkdir -p "${DIR}"
+if [[ -f "${FILE}" ]]; then
+  rm -rf "${FILE}" 
+fi
+
+ffmpeg -f alsa -i default "${FILE}"
+exit
