@@ -20,11 +20,8 @@ fi
 shopt -s autocd
 set -o vi
 
+export PATH="$PATH:$HOME/.local/bin"
 export VISUAL=nvim
 export EDITOR="nvim"
 export TERMINAL="kitty"
 export BROWSER="firefox"
-
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
