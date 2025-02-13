@@ -112,7 +112,7 @@
 
     "custom/weather":{
       "format": "{} ",
-      "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | xargs echo -n",
+      "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | tr -d + | xargs echo -n",
       "tooltip-format": "Jakarta: {}",
       "interval": 60,
     },
