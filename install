@@ -1,0 +1,46 @@
+#!/bin/bash
+
+DIR="$PWD"
+YAY=(
+  "cliphist",
+  "grim",
+  "hyprpicker",
+  "libnotify",
+  "man",
+  "npm",
+  "pacman-contrib",
+  "python-pywal16",
+  "ripgrep",
+  "slurp",
+  "swappy",
+  "swaync",
+  "unzip",
+  "zen-browser-bin",
+)
+FONT=(
+  "nerd-fonts",
+  "noto-fonts-emoji", 
+  "ttf-font-awesome",
+  "ttf-hack-nerd",
+  "ttf-icomoon-feather",
+  "ttf-iosevka-nerd",
+  "ttf-jetbrains-mono-nerd",
+)
+
+if [[ ! -f /usr/bin/yay ]]; then
+  pushd /tmp/
+  git clone https://aur.archlinux.org/yay.git
+  pushd /tmp/yay/
+  makepkg -si
+  popd
+  popd
+fi
+
+for package in "${YAY[@]}"; do
+  yay -S --noconfirm "${package}"
+done
+for font in "${FONT[@]}"; do
+  yay -S --noconfirm "${font}"
+done
+
+cp -r "${DIR}"/{.bashrc,.gitconfig,.config/,.local/} $HOME/
