@@ -1,126 +1,126 @@
 {
   "layer": "top",
-  "modules-left": [
-    "custom/launcher",
-    "cpu","memory",
-    "custom/updates",
-    "wlr/taskbar"
-  ],
-  "modules-center": ["hyprland/workspaces"],
-  "modules-right": [
-    "pulseaudio",
-    "battery",
-    "custom/weather",
-    "clock",
-    "tray",
-    "custom/power"
-  ],
+    "modules-left": [
+      "custom/launcher",
+      "cpu",
+      "memory",
+      "custom/updates",
+      "wlr/taskbar"
+    ],
+    "modules-center": ["hyprland/workspaces"],
+    "modules-right": [
+      "pulseaudio",
+      "battery",
+      "custom/weather",
+      "clock",
+      "tray",
+      "custom/power"
+    ],
 
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-bluetooth": "{icon} {volume}%",
-    "format-bluetooth-muted": "{icon}",
-    "format-muted": "0% {icon} ",
-    "format-source": "{volume}% ",
-    "format-source-muted": "",
-    "format-icons": {
-      "headphone": "",
-      "hands-free": "",
-      "headset": "",
-      "phone": "",
-      "portable": "",
-      "car": "",
-      "default": ["", "", ""]
+    "pulseaudio": {
+      "format": "{icon} {volume}%",
+      "format-bluetooth": "{icon} {volume}%",
+      "format-bluetooth-muted": "{icon}",
+      "format-muted": "0% {icon} ",
+      "format-source": "{volume}% ",
+      "format-source-muted": "",
+      "format-icons": {
+        "headphone": "",
+        "hands-free": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+      "on-click": "pavucontrol"
     },
-    "on-click": "pwvucontrol"
-  },
 
-  "hyprland/workspaces": {
-    "all-outputs": true,
-    "format": "{icon}",
-    "on-click": "activate",
-    "format-icons": {
-      "1": "一",
-      "2": "二",
-      "3": "三",
-      "4": "四",
-      "5": "五",
-      "6": "六",
-      "7": "七",
-      "8": "八",
-      "9": "九",
-      "10": "十",
-    }
-  },
-
-  "wlr/taskbar": {
-    "format": "{icon}",
-    "icon-size": 20,
-    "tooltip-format": "{title}",
-    "on-click": "activate",
-    "on-click-middle": "close",
-    "ignore-list": ["Alacritty", "kitty"],
-  },
-
-  "battery": {
-    "bat": "BAT0",
-    "states": {
-      "good": 95,
-      "warning": 30,
-      "critical": 20
+    "hyprland/workspaces": {
+      "all-outputs": true,
+      "format": "{icon}",
+      "on-click": "activate",
+      "format-icons": {
+        "1": "一",
+        "2": "二",
+        "3": "三",
+        "4": "四",
+        "5": "五",
+        "6": "六",
+        "7": "七",
+        "8": "八",
+        "9": "九",
+        "10": "十",
+      }
     },
-    "format": "{icon}  {capacity}%",
-    "format-charging": " {capacity}%",
-    "format-plugged": " {capacity}%",
-    "format-alt": "{time} {icon}",
-    "format-icons": ["", "", "", "", ""]
-  },
 
-  "tray":{
-    "icon-size":18,
-    "spacing": 10
-  },
+    "wlr/taskbar": {
+      "format": "{icon}",
+      "icon-size": 18,
+      "tooltip-format": "{title}",
+      "on-click": "activate",
+      "on-click-middle": "close",
+      "ignore-list": ["Alacritty", "kitty"],
+    },
 
-  "clock": {
-    "format": "{:%I:%M %a}",
-    "tooltip-format": "{:%a, %d %b, %I:%M %p}",
-  },
+    "battery": {
+      "bat": "BAT0",
+      "states": {
+        "good": 95,
+        "warning": 30,
+        "critical": 20
+      },
+      "format": "{icon}  {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-plugged": " {capacity}%",
+      "format-alt": "{time} {icon}",
+      "format-icons": ["", "", "", "", ""]
+    },
 
-  "cpu": {
-    "interval": 5,
-    "format": " {}%",
-    "max-length": 10
-  },
+    "tray":{
+      "icon-size":18,
+      "spacing": 10
+    },
 
-  "memory": {
-    "interval": 5,
-    "format": " {used}",
-    "max-length": 10
-  },
+    "clock": {
+      "format": "{:%I:%M %a}",
+      "tooltip-format": "{:%a, %d %b, %I:%M %p}",
+    },
 
-  "custom/launcher":{
-    "format": " ",
-    "on-click": "wofi --show drun",
-    "on-click-right": "killall rofi"
-  },
+    "cpu": {
+      "interval": 5,
+      "format": " {}%",
+      "max-length": 10
+    },
 
-  "custom/power":{
-    "format": " ",
-    "on-click": "bash ~/.config/rofi/leave/leave.sh",
-  },
+    "memory": {
+      "interval": 5,
+      "format": " {used}",
+      "max-length": 10
+    },
 
-  "custom/weather":{
-    "format": "{} ",
-    "exec": "curl -s 'https://wttr.in/Jakarta?format=1'",
-    "tooltip-format": "Jakarta: {}",
-    "interval": 60,
-  },
+    "custom/launcher":{
+      "format": " ",
+      "on-click": "wofi --show drun",
+      "on-click-right": "killall rofi"
+    },
 
-  "custom/updates":{
-    "format": " {}",
-    "exec": "checkupdates | wc -l",
-    "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
-    "interval": 60,
-  },
+    "custom/power":{
+      "format": " ",
+      "on-click": "bash ~/.config/rofi/leave/leave.sh",
+    },
 
+    "custom/weather":{
+      "format": "{} ",
+      "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | xargs echo -n",
+      "tooltip-format": "Jakarta: {}",
+      "interval": 60,
+    },
+
+    "custom/updates":{
+      "format": " {}",
+      "exec": "checkupdates | wc -l",
+      "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
+      "interval": 60,
+    },
 }
