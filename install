@@ -1,57 +1,63 @@
 #!/bin/bash
 
-DIR="$PWD"
-YAY=(
-#  "cliphist"
-#  "fcitx5"
-#  "fcitx5-configtool"
-#  "fcitx5-mozc"
-#  "grim"
-#  "hyprpaper"
-#  "hyprpicker"
-#  "libnotify"
-#  "man"
-#  "npm"
-#  "pacman-contrib"
-#  "pavucontrol"
-#  "pcmanfm"
-#  "pulseaudio"
-#  "python-pywal16"
-#  "ripgrep"
-#  "slurp"
-#  "swappy"
-#  "swaync"
-#  "unzip"
-#  "waybar"
-#  "wl-copy"
-#  "wofi"
-  "zen-browser-bin"
+PACMAN=(
+  "cliphist"
+  "fcitx5"
+  "fcitx5-configtool"
+  "fcitx5-mozc"
+  "grim"
+  "hyprpaper"
+  "hyprpicker"
+  "libnotify"
+  "man"
+  "npm"
+  "pacman-contrib"
+  "pavucontrol"
+  "pcmanfm"
+  "pulseaudio"
+  "pulseaudio-alsa"
+  "pulseaudio-jack"
+  "pulseaudio-bluetooth"
+  "ripgrep"
+  "slurp"
+  "swappy"
+  "swaync"
+  "unzip"
+  "waybar"
+  "wl-clipboard"
+  "wofi"
 )
-FONT=(
+YAY=(
   "nerd-fonts"
   "noto-fonts-cjk" 
   "noto-fonts-emoji" 
+  "python-pywal16"
   "ttf-font-awesome"
   "ttf-hack-nerd"
   "ttf-icomoon-feather"
   "ttf-iosevka-nerd"
   "ttf-jetbrains-mono-nerd"
+  "zen-browser-bin"
 )
+
+WALL_URL="https://w.wallhaven.cc/full"
 WALLHAVEN=(
-  "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Arisu
-  "https://w.wallhaven.cc/full/2y/wallhaven-2yv5m6.png" # Arisu
-  "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Arisu
-  "https://w.wallhaven.cc/full/9d/wallhaven-9d612x.png" # Mari
-  "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Momoi
-  "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
-  "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Momoi & Midori
-  "https://w.wallhaven.cc/full/l8/wallhaven-l86ykp.jpg" # Arisu, Yuzu, Momoi & Midori
+  "${WALL_URL}/8o/wallhaven-8opwv2.png" # Arisu
+  "${WALL_URL}/2y/wallhaven-2yv5m6.png" # Arisu
+  "${WALL_URL}/5g/wallhaven-5gyjw3.jpg" # Arisu
+  "${WALL_URL}/9d/wallhaven-9d612x.png" # Mari
+  "${WALL_URL}/rr/wallhaven-rrep8j.jpg" # Momoi
+  "${WALL_URL}/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
+  "${WALL_URL}/we/wallhaven-wel3l7.jpg" # Momoi & Midori
+  "${WALL_URL}/l8/wallhaven-l86ykp.jpg" # Arisu, Yuzu, Momoi & Midori
 )
+
+DIR="$PWD"
 CONF=(
-  ".bashrc"
-  ".gitconfig"
-  ".config/"
-  ".local/"
+  "${DIR}/.bashrc"
+  "${DIR}/.gitconfig"
+  "${DIR}/.config/"
+  "${DIR}/.local/"
 )
 
 check_yay() {
@@ -64,39 +70,43 @@ check_yay() {
   fi
 }
 
-install_yay() {
-  for package in "${YAY[@]}"; do
-    yay -S --noconfirm "${package}"
+install_packages() {
+  for package in "${PACMAN[@]}"; do
+    sudo pacman -S --noconfirm "${package}"
   done
 
-  for font in "${FONT[@]}"; do
-    yay -S --noconfirm "${font}"
+  for package in "${YAY[@]}"; do
+    yay -S --noconfirm "${package}"
   done
 }
 
 wallpaper() {
   for url in "${WALLHAVEN[@]}"; do
+    mkdir -p $HOME/Pictures/
     curl -O --output-dir $HOME/Pictures/ "${url}"
   done
 }
 
 copy_mod() {
-  for copy in "${CONF[@]}";do
-    cp -r "${DIR}/${copy}" $HOME/
+  for copy in "${CONF[@]}"; do
+    cp -r "${copy}" $HOME/
   done
-  chmod +x $HOME/.local/bin*
+  chmod +x $HOME/.local/bin/*
 }
 
-neovim() {
-  git clone https://github.com/MuteSTEVE/nvim.git $HOME/.config/nvim/
+clone_neovim() {
+  NEOVIM_DIR="$HOME/.config/nvim/"
+  if [[ -z "$(ls -A "${NEOVIM_DIR}")" ]]; then
+    git clone https://github.com/MuteSTEVE/nvim.git "${NEOVIM_DIR}"
+  fi
 }
 
 main() {
   check_yay
-  install_yay
+  install_packages
   copy_mod
   wallpaper
-  neovim
+  clone_neovim
 }
 
 main
