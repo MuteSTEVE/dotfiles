@@ -13,6 +13,7 @@ YAY=(
   "man"
   "npm"
   "pacman-contrib"
+  "pavucontrol"
   "pcmanfm"
   "pulseaudio"
   "python-pywal16"
