@@ -3,6 +3,9 @@
 DIR="$PWD"
 YAY=(
   "cliphist"
+  "fcitx5"
+  "fcitx5-configtool"
+  "fcitx5-mozc"
   "grim"
   "hyprpaper"
   "hyprpicker"
@@ -18,6 +21,7 @@ YAY=(
   "swaync"
   "unzip"
   "waybar"
+  "wl-copy"
   "wofi"
   "zen-browser-bin"
 )
@@ -81,11 +85,16 @@ copy_mod() {
   chmod +x $HOME/.local/bin*
 }
 
+neovim() {
+  git clone https://github.com/MuteSTEVE/nvim.git $HOME/.config/nvim/
+}
+
 main() {
   check_yay
   install_yay
   copy_mod
   wallpaper
+  neovim
 }
 
 main
