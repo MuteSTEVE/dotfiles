@@ -16,7 +16,6 @@ PACMAN=(
   "pcmanfm"
   "pulseaudio"
   "pulseaudio-alsa"
-  "pulseaudio-jack"
   "pulseaudio-bluetooth"
   "ripgrep"
   "slurp"
@@ -43,13 +42,13 @@ YAY=(
 WALL_URL="https://w.wallhaven.cc/full"
 WALLHAVEN=(
   "${WALL_URL}/8o/wallhaven-8opwv2.png" # Arisu
-  "${WALL_URL}/2y/wallhaven-2yv5m6.png" # Arisu
+# "${WALL_URL}/2y/wallhaven-2yv5m6.png" # Arisu
   "${WALL_URL}/5g/wallhaven-5gyjw3.jpg" # Arisu
   "${WALL_URL}/9d/wallhaven-9d612x.png" # Mari
   "${WALL_URL}/rr/wallhaven-rrep8j.jpg" # Momoi
   "${WALL_URL}/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
   "${WALL_URL}/we/wallhaven-wel3l7.jpg" # Momoi & Midori
-  "${WALL_URL}/l8/wallhaven-l86ykp.jpg" # Arisu, Yuzu, Momoi & Midori
+# "${WALL_URL}/l8/wallhaven-l86ykp.jpg" # Arisu, Yuzu, Momoi & Midori
 )
 
 DIR="$PWD"

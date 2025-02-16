@@ -2,18 +2,17 @@
   "layer": "top",
     "modules-left": [
       "custom/launcher",
-      "cpu",
+      "hyprland/workspaces",
+      "tray",
       "memory",
       "custom/updates",
-      "wlr/taskbar"
     ],
-    "modules-center": ["hyprland/workspaces"],
+    "modules-center": ["hyprland/window"],
     "modules-right": [
       "pulseaudio",
       "battery",
       "custom/weather",
       "clock",
-      "tray",
       "custom/power"
     ],
 
@@ -21,7 +20,7 @@
       "format": "{icon} {volume}%",
       "format-bluetooth": "{icon} {volume}%",
       "format-bluetooth-muted": "{icon}",
-      "format-muted": "0% {icon} ",
+      "format-muted": "{icon}0%",
       "format-source": "{volume}% ",
       "format-source-muted": "",
       "format-icons": {
@@ -33,7 +32,7 @@
         "car": "",
         "default": ["", "", ""]
       },
-      "on-click": "pwvucontrol"
+      "on-click": "pavucontrol"
     },
 
     "hyprland/workspaces": {
@@ -54,13 +53,10 @@
       }
     },
 
-    "wlr/taskbar": {
-      "format": "{icon}",
-      "icon-size": 18,
-      "tooltip-format": "{title}",
-      "on-click": "activate",
-      "on-click-middle": "close",
-      "ignore-list": ["Alacritty", "kitty"],
+    "hyprland/window": {
+      "format": "{title}",
+      "icon": true,
+      "icon-size": 20,
     },
 
     "battery": {
@@ -70,7 +66,7 @@
         "warning": 30,
         "critical": 20
       },
-      "format": "{icon}  {capacity}%",
+      "format": "{icon} {capacity}%",
       "format-charging": " {capacity}%",
       "format-plugged": " {capacity}%",
       "format-alt": "{time} {icon}",
@@ -78,19 +74,34 @@
     },
 
     "tray":{
-      "icon-size":18,
+      "icon-size":20,
       "spacing": 10
     },
 
     "clock": {
       "format": "{:%I:%M %a}",
-      "tooltip-format": "{:%a, %d %b, %I:%M %p}",
-    },
-
-    "cpu": {
-      "interval": 5,
-      "format": " {}%",
-      "max-length": 10
+      "format-alt": "{:%A, %B %d, %Y (%R)}",
+      "tooltip-format": "<tt><small>{calendar}</small></tt>",
+      "calendar": {
+        "mode"          : "year",
+        "mode-mon-col"  : 3,
+        "weeks-pos"     : "right",
+        "on-scroll"     : 1,
+        "format": {
+          "months":     "<span color='#ffead3'><b>{}</b></span>",
+          "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+          "weeks":      "<span color='#99ffdd'><b>{}</b></span>",
+          "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+          "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+        }
+      },
+      "actions":  {
+        "on-click-right": "mode",
+        "on-scroll-up": "tz_up",
+        "on-scroll-down": "tz_down",
+        "on-scroll-up": "shift_up",
+        "on-scroll-down": "shift_down"
+      }
     },
 
     "memory": {
