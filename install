@@ -1,13 +1,18 @@
 #!/bin/bash
 
+## Installing packages
 PACMAN=(
   "cliphist"
   "fcitx5"
   "fcitx5-configtool"
   "fcitx5-mozc"
+  "ffmpeg"
+  "fzf"
   "grim"
+  "hyprland"
   "hyprpaper"
   "hyprpicker"
+  "lazygit"
   "libnotify"
   "man"
   "npm"
@@ -17,6 +22,7 @@ PACMAN=(
   "pulseaudio"
   "pulseaudio-alsa"
   "pulseaudio-bluetooth"
+  "ranger"
   "ripgrep"
   "slurp"
   "swappy"
@@ -39,27 +45,26 @@ YAY=(
   "zen-browser-bin"
 )
 
-WALL_URL="https://w.wallhaven.cc/full"
+## Taken wallhaven.cc
 WALLHAVEN=(
-  "${WALL_URL}/8o/wallhaven-8opwv2.png" # Arisu
-# "${WALL_URL}/2y/wallhaven-2yv5m6.png" # Arisu
-  "${WALL_URL}/5g/wallhaven-5gyjw3.jpg" # Arisu
-  "${WALL_URL}/9d/wallhaven-9d612x.png" # Mari
-  "${WALL_URL}/rr/wallhaven-rrep8j.jpg" # Momoi
-  "${WALL_URL}/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
-  "${WALL_URL}/we/wallhaven-wel3l7.jpg" # Momoi & Midori
-# "${WALL_URL}/l8/wallhaven-l86ykp.jpg" # Arisu, Yuzu, Momoi & Midori
+  "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Arisu
+  "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Arisu
+  "https://w.wallhaven.cc/full/9d/wallhaven-9d612x.png" # Mari
+  "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Momoi
+  "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
+  "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Momoi & Midori
 )
 
-DIR="$PWD"
+## To be copied
 CONF=(
-  "${DIR}/.bashrc"
-  "${DIR}/.gitconfig"
-  "${DIR}/.config/"
-  "${DIR}/.local/"
+  ".bashrc"
+  ".gitconfig"
+  ".config/"
+  ".local/"
 )
 
-check_yay() {
+packages() {
+  # Check if yay is installed
   if [[ ! -f /usr/bin/yay ]]; then
     pushd /tmp/
     git clone https://aur.archlinux.org/yay.git
@@ -67,13 +72,10 @@ check_yay() {
     makepkg -si
     popd && popd
   fi
-}
 
-install_packages() {
   for package in "${PACMAN[@]}"; do
     sudo pacman -S --noconfirm "${package}"
   done
-
   for package in "${YAY[@]}"; do
     yay -S --noconfirm "${package}"
   done
@@ -88,7 +90,7 @@ wallpaper() {
 
 copy_mod() {
   for copy in "${CONF[@]}"; do
-    cp -r "${copy}" $HOME/
+    cp -r "$PWD/${copy}" $HOME/
   done
   chmod +x $HOME/.local/bin/*
 }
@@ -101,11 +103,9 @@ clone_neovim() {
 }
 
 main() {
-  check_yay
-  install_packages
+  packages
   copy_mod
   wallpaper
   clone_neovim
 }
-
 main
