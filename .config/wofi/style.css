@@ -1,0 +1,55 @@
+@import '/home/mutesteve/.cache/wal/colors-wofi.css';
+
+window {
+  margin: 0px;
+  border: 1px solid @color1;
+  background-color: @background;
+}
+
+#input {
+  margin: 5px;
+  border: none;
+  color: @background;
+  background-color: @cursor;
+}
+
+#inner-box {
+  margin: 5px;
+  border: none;
+  background-color: @background;
+}
+
+#outer-box {
+  margin: 5px;
+  border: none;
+  background-color: @background;
+}
+
+#scroll {
+  margin: 0px;
+  border: none;
+}
+
+#text {
+  margin: 5px;
+  border: none;
+  color: @cursor;
+} 
+
+#entry.activatable #text {
+  color: @background;
+}
+
+#entry > * {
+  color: @cursor;
+}
+
+#entry:selected {
+  background-color: @color1;
+  border-radius: 5px;
+}
+
+#entry:selected #text {
+  color: @background;
+  font-weight: bold;
+}

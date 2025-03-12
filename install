@@ -27,12 +27,15 @@ PACMAN=(
   "slurp"
   "swappy"
   "swaync"
+  "tmux"
   "unzip"
   "waybar"
   "wl-clipboard"
   "wofi"
 )
 YAY=(
+  "anki-bin"
+  "kwindowsystem"
   "nerd-fonts"
   "noto-fonts-cjk" 
   "noto-fonts-emoji" 
