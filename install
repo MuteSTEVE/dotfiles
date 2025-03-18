@@ -1,8 +1,14 @@
 #!/bin/bash
 
+## Exclusive to arch
+DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
+if [[ ${DISTRO} == 'arch' ]]; then
+  echo "Sorry, Arch linux only"
+  exit
+fi
+
 ## Installing packages
 PACMAN=(
-  "cliphist"
   "fcitx5"
   "fcitx5-configtool"
   "fcitx5-mozc"
@@ -19,10 +25,6 @@ PACMAN=(
   "pacman-contrib"
   "pavucontrol"
   "pcmanfm"
-  "pulseaudio"
-  "pulseaudio-alsa"
-  "pulseaudio-bluetooth"
-  "ranger"
   "ripgrep"
   "slurp"
   "swappy"
@@ -48,14 +50,20 @@ YAY=(
   "zen-browser-bin"
 )
 
-## Taken wallhaven.cc
+## Wallpaper from wallhaven.cc
 WALLHAVEN=(
-  "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Arisu
-  "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Arisu
-  "https://w.wallhaven.cc/full/9d/wallhaven-9d612x.png" # Mari
-  "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Momoi
-  "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Momoi & Midori
-  "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Momoi & Midori
+  "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
+  "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
+  "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
+  "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # Blue Archive - Izuna
+  "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # Blue Archive - Izuna
+  "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # Blue Archive - Koyuki
+  "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Blue Archive - Momoi
+  "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Blue Archive - Momoi & Midori
+  "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Blue Archive - Momoi & Midori
+  "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # Blue Archive - Mutsuki
+  "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # Blue Archive - Mutsuki
+  "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # Blue Archive - Mutsuki
 )
 
 ## To be copied
@@ -73,6 +81,7 @@ packages() {
     git clone https://aur.archlinux.org/yay.git
     pushd /tmp/yay/
     makepkg -si
+    rmdir /tmp/yay/
     popd && popd
   fi
 
@@ -91,24 +100,23 @@ wallpaper() {
   done
 }
 
-copy_mod() {
+copy() {
   for copy in "${CONF[@]}"; do
     cp -r "$PWD/${copy}" $HOME/
   done
   chmod +x $HOME/.local/bin/*
 }
 
-clone_neovim() {
-  NEOVIM_DIR="$HOME/.config/nvim/"
-  if [[ -z "$(ls -A "${NEOVIM_DIR}")" ]]; then
-    git clone https://github.com/MuteSTEVE/nvim.git "${NEOVIM_DIR}"
+nvim() {
+  NVIM_DIR="$HOME/.config/nvim/"
+  if [[ -z "$(ls -A "${NVIM_DIR}")" ]]; then
+    git clone https://github.com/MuteSTEVE/nvim.git "${NVIM_DIR}"
   fi
 }
 
 main() {
   packages
-  copy_mod
+  copy
   wallpaper
-  clone_neovim
+  nvim
 }
-main
