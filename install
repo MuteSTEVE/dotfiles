@@ -21,6 +21,7 @@ PACMAN=(
   "lazygit"
   "libnotify"
   "man"
+  "mpv"
   "npm"
   "pacman-contrib"
   "pavucontrol"
@@ -114,9 +115,16 @@ nvim() {
   fi
 }
 
+mpvacious(){
+  mkdir -p $HOME/.config/mpv/scripts/
+  git clone 'https://github.com/Ajatt-Tools/mpvacious.git' ~/.config/mpv/scripts/subs2srs
+}
+
 main() {
   packages
   copy
   wallpaper
   nvim
+  mpvacious
 }
+main
