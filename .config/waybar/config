@@ -20,7 +20,7 @@
       "format": "{icon} {volume}%",
       "format-bluetooth": "{icon} {volume}%",
       "format-bluetooth-muted": "{icon}",
-      "format-muted": "{icon}0%",
+      "format-muted": "{icon}x",
       "format-source": "{volume}% ",
       "format-source-muted": "",
       "format-icons": {
@@ -32,7 +32,8 @@
         "car": "",
         "default": ["", "", ""]
       },
-      "on-click": "pavucontrol"
+      "on-click": "pavucontrol",
+      "on-click-right": "blueman-manager"
     },
 
     "hyprland/workspaces": {
@@ -54,7 +55,6 @@
     },
 
     "hyprland/window": {
-      "format": "{title}",
       "icon": true,
       "icon-size": 20,
     },
@@ -75,7 +75,7 @@
 
     "tray":{
       "icon-size":20,
-      "spacing": 10
+      "spacing": 5
     },
 
     "clock": {
@@ -107,7 +107,7 @@
     "memory": {
       "interval": 5,
       "format": " {used}",
-      "max-length": 10
+      "max-length": 100
     },
 
     "custom/launcher":{

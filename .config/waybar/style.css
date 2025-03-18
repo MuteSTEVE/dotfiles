@@ -14,14 +14,12 @@ window#waybar.empty #window {
   background: none
 }
 
-#backlight,
 #battery,
 #clock,
 #cpu,
 #custom-launcher,
 #custom-power,
 #custom-updates,
-#custom-wallpaper,
 #memory,
 #pulseaudio,
 #tray,

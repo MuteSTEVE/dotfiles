@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>~/.config/waybar/config.html</title>
+<meta name="Generator" content="Vim/9.1">
+<meta name="plugin-version" content="vim9.0_v2">
+<meta name="syntax" content="none">
+<meta name="settings" content="use_css,no_foldcolumn,pre_wrap,prevent_copy=,use_input_for_pc=none">
+<meta name="colorscheme" content="none">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+a { color: inherit; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+{
+  &quot;layer&quot;: &quot;top&quot;,
+    &quot;modules-left&quot;: [
+      &quot;custom/launcher&quot;,
+      &quot;hyprland/workspaces&quot;,
+      &quot;tray&quot;,
+      &quot;memory&quot;,
+      &quot;custom/updates&quot;,
+    ],
+    &quot;modules-center&quot;: [&quot;hyprland/window&quot;],
+    &quot;modules-right&quot;: [
+      &quot;pulseaudio&quot;,
+      &quot;battery&quot;,
+      &quot;custom/weather&quot;,
+      &quot;clock&quot;,
+      &quot;custom/power&quot;
+    ],
+
+    &quot;pulseaudio&quot;: {
+      &quot;format&quot;: &quot;{icon} {volume}%&quot;,
+      &quot;format-bluetooth&quot;: &quot;{icon} {volume}%&quot;,
+      &quot;format-bluetooth-muted&quot;: &quot;{icon}&quot;,
+      &quot;format-muted&quot;: &quot;{icon}x&quot;,
+      &quot;format-source&quot;: &quot;{volume}% &quot;,
+      &quot;format-source-muted&quot;: &quot;&quot;,
+      &quot;format-icons&quot;: {
+        &quot;headphone&quot;: &quot;&quot;,
+        &quot;hands-free&quot;: &quot;&quot;,
+        &quot;headset&quot;: &quot;&quot;,
+        &quot;phone&quot;: &quot;&quot;,
+        &quot;portable&quot;: &quot;&quot;,
+        &quot;car&quot;: &quot;&quot;,
+        &quot;default&quot;: [&quot;&quot;, &quot;&quot;, &quot;&quot;]
+      },
+      &quot;on-click&quot;: &quot;pavucontrol&quot;,
+      &quot;on-click-right&quot;: &quot;blueman-manager&quot;
+    },
+
+    &quot;hyprland/workspaces&quot;: {
+      &quot;all-outputs&quot;: true,
+      &quot;format&quot;: &quot;{icon}&quot;,
+      &quot;on-click&quot;: &quot;activate&quot;,
+      &quot;format-icons&quot;: {
+        &quot;1&quot;: &quot;一&quot;,
+        &quot;2&quot;: &quot;二&quot;,
+        &quot;3&quot;: &quot;三&quot;,
+        &quot;4&quot;: &quot;四&quot;,
+        &quot;5&quot;: &quot;五&quot;,
+        &quot;6&quot;: &quot;六&quot;,
+        &quot;7&quot;: &quot;七&quot;,
+        &quot;8&quot;: &quot;八&quot;,
+        &quot;9&quot;: &quot;九&quot;,
+        &quot;10&quot;: &quot;十&quot;,
+      }
+    },
+
+    &quot;hyprland/window&quot;: {
+      &quot;format&quot;: &quot;{title:.53}&quot;,
+      &quot;icon&quot;: true,
+      &quot;icon-size&quot;: 20,
+    },
+
+    &quot;battery&quot;: {
+      &quot;bat&quot;: &quot;BAT0&quot;,
+      &quot;states&quot;: {
+        &quot;good&quot;: 95,
+        &quot;warning&quot;: 30,
+        &quot;critical&quot;: 20
+      },
+      &quot;format&quot;: &quot;{icon} {capacity}%&quot;,
+      &quot;format-charging&quot;: &quot; {capacity}%&quot;,
+      &quot;format-plugged&quot;: &quot; {capacity}%&quot;,
+      &quot;format-alt&quot;: &quot;{time} {icon}&quot;,
+      &quot;format-icons&quot;: [&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;]
+    },
+
+    &quot;tray&quot;:{
+      &quot;icon-size&quot;:20,
+      &quot;spacing&quot;: 5
+    },
+
+    &quot;clock&quot;: {
+      &quot;format&quot;: &quot;{:%I:%M %a}&quot;,
+      &quot;format-alt&quot;: &quot;{:%A, %B %d, %Y (%R)}&quot;,
+      &quot;tooltip-format&quot;: &quot;&lt;tt&gt;&lt;small&gt;{calendar}&lt;/small&gt;&lt;/tt&gt;&quot;,
+      &quot;calendar&quot;: {
+        &quot;mode&quot;          : &quot;year&quot;,
+        &quot;mode-mon-col&quot;  : 3,
+        &quot;weeks-pos&quot;     : &quot;right&quot;,
+        &quot;on-scroll&quot;     : 1,
+        &quot;format&quot;: {
+          &quot;months&quot;:     &quot;&lt;span color='#ffead3'&gt;&lt;b&gt;{}&lt;/b&gt;&lt;/span&gt;&quot;,
+          &quot;days&quot;:       &quot;&lt;span color='#ecc6d9'&gt;&lt;b&gt;{}&lt;/b&gt;&lt;/span&gt;&quot;,
+          &quot;weeks&quot;:      &quot;&lt;span color='#99ffdd'&gt;&lt;b&gt;{}&lt;/b&gt;&lt;/span&gt;&quot;,
+          &quot;weekdays&quot;:   &quot;&lt;span color='#ffcc66'&gt;&lt;b&gt;{}&lt;/b&gt;&lt;/span&gt;&quot;,
+          &quot;today&quot;:      &quot;&lt;span color='#ff6699'&gt;&lt;b&gt;&lt;u&gt;{}&lt;/u&gt;&lt;/b&gt;&lt;/span&gt;&quot;
+        }
+      },
+      &quot;actions&quot;:  {
+        &quot;on-click-right&quot;: &quot;mode&quot;,
+        &quot;on-scroll-up&quot;: &quot;tz_up&quot;,
+        &quot;on-scroll-down&quot;: &quot;tz_down&quot;,
+        &quot;on-scroll-up&quot;: &quot;shift_up&quot;,
+        &quot;on-scroll-down&quot;: &quot;shift_down&quot;
+      }
+    },
+
+    &quot;memory&quot;: {
+      &quot;interval&quot;: 5,
+      &quot;format&quot;: &quot; {used}&quot;,
+      &quot;max-length&quot;: 10
+    },
+
+    &quot;custom/launcher&quot;:{
+      &quot;format&quot;: &quot; &quot;,
+      &quot;on-click&quot;: &quot;wofi --show drun&quot;,
+      &quot;on-click-right&quot;: &quot;killall rofi&quot;
+    },
+
+    &quot;custom/power&quot;:{
+      &quot;format&quot;: &quot; &quot;,
+      &quot;on-click&quot;: &quot;bash ~/.config/rofi/leave/leave.sh&quot;,
+    },
+
+    &quot;custom/weather&quot;:{
+      &quot;format&quot;: &quot;{} &quot;,
+      &quot;exec&quot;: &quot;curl -s '<a href="https://wttr.in/Jakarta?format=1">https://wttr.in/Jakarta?format=1</a>' | tr -d + | xargs echo -n&quot;,
+      &quot;tooltip-format&quot;: &quot;Jakarta: {}&quot;,
+      &quot;interval&quot;: 60,
+    },
+
+    &quot;custom/updates&quot;:{
+      &quot;format&quot;: &quot; {}&quot;,
+      &quot;exec&quot;: &quot;checkupdates | wc -l&quot;,
+      &quot;exec-if&quot;: &quot;[[ $(checkupdates | wc -l) != 0 ]]&quot;,
+      &quot;interval&quot;: 60,
+    },
+}
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
