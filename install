@@ -2,7 +2,7 @@
 
 ## Exclusive to arch
 DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
-if [[ ${DISTRO} == 'arch' ]]; then
+if [[ ${DISTRO} != 'arch' ]]; then
   echo "Sorry, Arch linux only"
   exit
 fi
@@ -23,13 +23,22 @@ PACMAN=(
   "man"
   "mpv"
   "npm"
+  "ocrfeeder"
   "pacman-contrib"
   "pavucontrol"
   "pcmanfm"
+  "peazip"
   "ripgrep"
   "slurp"
   "swappy"
   "swaync"
+  "tesseract"
+  "tesseract-data-chi_sim"
+  "tesseract-data-chi_sim_vert"
+  "tesseract-data-chi_tra"
+  "tesseract-data-chi_tra_vert"
+  "tesseract-data-jpn"
+  "tesseract-data-jpn_vert"
   "tmux"
   "unzip"
   "waybar"
@@ -52,7 +61,7 @@ YAY=(
 )
 
 ## Wallpaper from wallhaven.cc
-WALLHAVEN=(
+WALL=(
   "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
   "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
   "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
@@ -95,7 +104,7 @@ packages() {
 }
 
 wallpaper() {
-  for url in "${WALLHAVEN[@]}"; do
+  for url in "${WALL[@]}"; do
     mkdir -p $HOME/Pictures/
     curl -O --output-dir $HOME/Pictures/ "${url}"
   done
