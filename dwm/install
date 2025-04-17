@@ -1,23 +1,24 @@
 #!/bin/bash
+echo -e "\n----------- Commence Operation ----------------\n"
 
-echo "
------------ Commence Operation ----------------
-"
+# Status flag
+readonly ENABLE
+readonly DISABLE
 
-## 0 = disable, 1 = enable; For convenience.
-status=( "0" "1" )
-current_DIR="$PWD"
-flexi_DIR="$HOME/suckless-flexipatch"
-out_DIR="$flexi_DIR/output"
+# Define the directories
+readonly CURRENT_DIR="$PWD"
+readonly FLEXIPATCH_DIR="$HOME/suckless-flexipatch"
+readonly OUTPUT_DIR="$FLEXIPATCH_DIR/output"
 
-for DIR in "$flexi_DIR" "$out_DIR"; do
-  if [[ ! -d "$DIR" ]]; then
-    mkdir -p "$flexi_DIR" "$out_DIR"
-  fi
-done
+readonly DWM_DIR="$FLEXIPATCH_DIR/dwm-flexipatch"
+readonly DMENU_DIR="$FLEXIPATCH_DIR/dmenu-flexipatch"
+readonly ST_DIR="$FLEXIPATCH_DIR/st-flexipatch"
+readonly FINALIZER_DIR="$FLEXIPATCH_DIR/flexipatch-finalizer"
+
+mkdir -p "$FLEXIPATCH_DIR" "$OUTPUT_DIR"
 
 # Clone from bakkeby flexi repos
-repos_url=(
+REPOS_URL=(
   "https://github.com/bakkeby/dwm-flexipatch"
   "https://github.com/bakkeby/st-flexipatch"
   "https://github.com/bakkeby/dmenu-flexipatch"
@@ -25,29 +26,22 @@ repos_url=(
 )
 
 # Create the necessary directory
-for repo in "${repos_url[@]}"; do
-  repo_name=$(basename "$repo")
-  repo_DIR="$flexi_DIR/$repo_name"
+for repo in "${REPOS_URL[@]}"; do
+  REPO_NAME=$(basename "$repo")
+  TARGET_DIR="$FLEXIPATCH_DIR/$REPO_NAME"
 
-  if [[ ! -d "$repo_DIR" ]]; then
-    echo "Cloning $repo_name..."
-    git clone "$repo" "$repo_DIR" 2>/dev/null
+  if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "Cloning $REPO_NAME..."
+    git clone "$repo" "$TARGET_DIR" 2>/dev/null
   else
-    echo "$repo_name already exist, skipping clone."
+    echo "$REPO_NAME already exist, skipping clone."
   fi
 done
 
-# Define the DIRectory
-dwm_DIR="$flexi_DIR/dwm-flexipatch"
-st_DIR="$flexi_DIR/st-flexipatch"
-fin_DIR="$flexi_DIR/flexipatch-finalizer"
+PatchDWM() {
+  echo -e "\n------------ Patching out DWM -----------------\n"
 
-dwm_patches() {
-  echo "
------------- Patching out DWM -----------------
-  "
-
-  local patches=(
+  local PATCHES=(
     "ALWAYSCENTER_PATCH"
     "ATTACHBELOW_PATCH"
     "BAR_AWESOMEBAR_PATCH"
@@ -64,25 +58,23 @@ dwm_patches() {
     "VANITYGAPS_MONOCLE_PATCH"
     "VANITYGAPS_PATCH"
   )
-  local ex_patches=( "BAR_PADDING_VANITYGAPS_PATCH" ) ## ex = exclude
+  local EX_PATCHES=( "BAR_PADDING_VANITYGAPS_PATCH" )
 
-  for patch in "${patches[@]}"; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$dwm_DIR/patches.def.h"
+  for patch in "${PATCHES[@]}"; do
+    sed -i "s/$patch $DISABLE/$patch $ENABLE/g" "$DWM_DIR/patches.def.h"
   done
 
-  for ex_patch in "${ex_patches[@]}"; do
-    sed -i "s/$ex_patch ${status[1]}/$ex_patch ${status[0]}/g" "$dwm_DIR/patches.def.h"
+  for ex_patch in "${EX_PATCHES[@]}"; do
+    sed -i "s/$ex_patch $ENABLE/$ex_patch $DISABLE/g" "$DWM_DIR/patches.def.h"
   done
 
-  cd "$dwm_DIR" && sudo make clean install && cd "$current_DIR"
+  pushd "$DWM_DIR" && sudo make clean install && popd
 }
 
-st_patches() {
-  echo "
--------------- Patching out ST -----------------
-  "
+PatchST() {
+  echo -e "\n-------------- Patching out ST -----------------\n"
 
-  local patches=(
+  local PATCHES=(
     "ALPHA_PATCH"
     "BOLD_IS_NOT_BRIGHT_PATCH"
     "SCROLLBACK_PATCH"
@@ -91,42 +83,51 @@ st_patches() {
     "WIDE_GLYPHS_PATCH"
   )
 
-  for patch in "${patches[@]}"; do
-    sed -i "s/$patch ${status[0]}/$patch ${status[1]}/g" "$st_DIR/patches.def.h"
+  for patch in "${PATCHES[@]}"; do
+    sed -i "s/$patch $DISABLE/$patch $ENABLE/g" "$ST_DIR/patches.def.h"
   done
 
-  cd "$st_DIR" && sudo make clean install && cd "$current_DIR"
+  pushd "$ST_DIR" && sudo make clean install && popd
 }
 
-finalizer() {
-  echo "
---------------- Finalizer ----------------------
-  "
+PatchDMENU() {
+  echo -e "\n-------------- Patching out DMENU -----------------\n"
 
-  local fin="$fin_DIR/flexipatch-finalizer.sh"
-  local dwm_OUT="$out_DIR/dwm"
-  local st_OUT="$out_DIR/st"
+  pushd "$DMENU_DIR" && sudo make clean install && popd
+}
+PatchFinalizer() {
+  echo -e "\n--------------- Finalizer ----------------------\n"
 
-  bash "$fin" -r -d "$dwm_DIR" -o "$dwm_OUT"
-  bash "$fin" -r -d "$st_DIR" -o "$st_OUT"
+  local FINALIZER_SCRIPT="$FINALIZER_DIR/flexipatch-finalizer.sh"
+  local OUTPUT_DWM="$OUTPUT_DIR/dwm"
+  local OUTPUT_DMENU="$OUTPUT_DIR/DMENU"
+  local OUTPUT_ST="$OUTPUT_DIR/st"
 
-  echo "Patched dwm at: $dwm_OUT"
-  echo "Patched st at: $st_OUT"
+  chmod +x "$FINALIZER_SCRIPT"
+  "$FINALIZER_SCRIPT" -r -d "$DWM_DIR" -o "$OUTPUT_DWM"
+  "$FINALIZER_SCRIPT" -r -d "$DMENU_DIR" -o "$OUTPUT_DWM"
+  "$FINALIZER_SCRIPT" -r -d "$ST_DIR" -o "$OUTPUT_ST"
+
+  echo "Patched dwm at: $OUTPUT_DWM"
+  echo "Patched dmenu at: $OUTPUT_DMENU"
+  echo "Patched st at: $OUTPUT_ST"
 }
 
-dwm_patches
-st_patches
-finalizer
+main() {
+  PatchDWM
+  PatchDMENU
+  PatchST
+  PatchFinalizer
+}
+main
 
-echo "
---------------- Operation
+echo -e "\n--------------- Operation
  Please re-login from your current dwm session!
                Successfull ---------------------
 
- By: MuteSTEVE
-"
+ By: MuteSTEVE\n"
 
-### Future implementation
+### TODO: Future implementation
 #dwm_configs() {
 #  local configs=(
 #    "static const unsigned int gappih         = 10;"
