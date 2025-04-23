@@ -1,11 +1,11 @@
 #!/bin/bash
 
 ## Exclusive to arch
-DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
-if [[ ${DISTRO} != 'arch' ]]; then
-  echo "Sorry, Arch linux only"
-  exit
-fi
+#DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
+#if [[ ${DISTRO} != 'arch' ]]; then
+#  echo "Sorry, Arch linux only"
+#  exit
+#fi
 
 ## Installing packages
 PACMAN=(
@@ -28,6 +28,8 @@ PACMAN=(
   "pavucontrol"
   "pcmanfm"
   "peazip"
+  "pipewire"
+  "pipewire-pulse"
   "ripgrep"
   "slurp"
   "swappy"
@@ -42,6 +44,7 @@ PACMAN=(
   "tmux"
   "unzip"
   "waybar"
+  "wireplumber"
   "wl-clipboard"
   "wofi"
 )

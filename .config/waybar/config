@@ -9,30 +9,18 @@
     ],
     "modules-center": ["hyprland/window"],
     "modules-right": [
-      "pulseaudio",
+      "wireplumber",
       "battery",
       "custom/weather",
       "clock",
       "custom/power"
     ],
 
-    "pulseaudio": {
+    "wireplumber": {
       "format": "{icon} {volume}%",
-      "format-bluetooth": "{icon} {volume}%",
-      "format-bluetooth-muted": "{icon}",
+      "format-icons": ["", "", ""],
       "format-muted": "{icon}x",
-      "format-source": "{volume}% ",
-      "format-source-muted": "",
-      "format-icons": {
-        "headphone": "",
-        "hands-free": "",
-        "headset": "",
-        "phone": "",
-        "portable": "",
-        "car": "",
-        "default": ["", "", ""]
-      },
-      "on-click": "pavucontrol",
+      "on-click": "pwvucontrol",
       "on-click-right": "blueman-manager"
     },
 
