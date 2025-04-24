@@ -18,7 +18,7 @@ window#waybar.empty #window {
 #clock,
 #cpu,
 #custom-launcher,
-#custom-power,
+#custom-uptime,
 #custom-updates,
 #memory,
 #wireplumber,
@@ -30,19 +30,8 @@ window#waybar.empty #window {
   padding: 0px 10px;
   background: @background;
 }
-#custom-power,
-#custom-launcher {
-  font-size: 20px;
-  padding-right: 5px;
-  margin-right: 10px;
-}
-#custom-launcher {
-  color: @arch;
-  margin-right: 0px;
-}
 
 #workspaces {
-  margin: 5px 0px 0px 5px;
   padding: 0px;
   color: @color1;
 }
@@ -57,4 +46,18 @@ window#waybar.empty #window {
 #workspaces button.active {
   background: @color1;
   min-width: 40px;
+}
+
+#custom-launcher {
+  font-size: 20px;
+  padding-right: 5px;
+  margin-right: 10px;
+}
+#custom-launcher {
+  color: @arch;
+  margin-right: 0px;
+  margin-left: 10px;
+}
+#custom-uptime {
+  margin-right: 10px;
 }
