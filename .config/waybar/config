@@ -3,7 +3,7 @@
     "modules-left": [
       "custom/launcher",
       "hyprland/workspaces",
-      "tray",
+      "custom/uptime",
       "memory",
       "custom/updates",
     ],
@@ -13,7 +13,7 @@
       "battery",
       "custom/weather",
       "clock",
-      "custom/uptime"
+      "tray",
     ],
 
     "wireplumber": {
