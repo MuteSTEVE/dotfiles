@@ -27,7 +27,7 @@ YAY() {
   done
 }
 
-hyprland_packages() {
+PackagesHyprland() {
   local list=(
     "grim"
     "hyprland"
@@ -44,7 +44,7 @@ hyprland_packages() {
   YAY "${list}"
 }
 
-font_packages() {
+PackagesFont() {
   local list=(
     "nerd-fonts"
     "noto-fonts-cjk" 
@@ -59,7 +59,7 @@ font_packages() {
   YAY "${list}"
 }
 
-essential_packages() {
+PackagesEssential() {
   local list=(
     "fzf"
     "kwindowsystem"
@@ -88,7 +88,7 @@ essential_packages() {
   fi
 }
 
-japanese_packages() {
+PackagesJapanese() {
   local list=(
     "anki-bin"
     "fcitx5"
@@ -109,8 +109,10 @@ japanese_packages() {
   YAY "${list}"
 
   local DIR=$HOME/.config/mpv/scripts/
-  mkdir -p $DIR
-  git clone 'https://github.com/Ajatt-Tools/mpvacious.git' $DIR/subs2srs
+  if [[ -z "$(ls -A "${DIR}")" ]]; then
+    mkdir -p $DIR
+    git clone 'https://github.com/Ajatt-Tools/mpvacious.git' $DIR/subs2srs
+  fi
 }
 
 ## To be copied
@@ -153,10 +155,10 @@ wallpaper() {
 }
 
 main() {
-  hyprland_packages
-  font_packages
-  essential_packages
-  japanese_packages
+  PackagesHyprland
+  PackagesFont
+  PackagesEssential
+  PackagesJapanese
   copy
   wallpaper
 }
