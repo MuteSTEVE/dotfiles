@@ -1,0 +1,36 @@
+#!/bin/sh
+
+year=$(date "+%G")
+month=$(date "+%m")
+day=$(date "+%d")
+name=$(date "+%A")
+hour=$(date "+%I")
+minute=$(date "+%M")
+ampm=$(date "+%P")
+
+re_zero() {
+  case ${hour::1} in "0") hour=${hour:1:1} ;; esac
+  case ${day::1} in "0") day=${day:1:1} ;; esac
+  case ${month::1} in "0") month=${month:1:1} ;; esac
+}
+
+case $ampm in
+  "am") ampm="午前" ;;
+  "pm") ampm="午後" ;;
+esac
+
+case ${name::3} in
+  "Sun") kanji="日曜日" ;;
+  "Mon") kanji="月曜日" ;;
+  "Tue") kanji="火曜日" ;;
+  "Wed") kanji="水曜日" ;;
+  "Thu") kanji="木曜日" ;;
+  "Fri") kanji="金曜日" ;;
+  "Sat") kanji="土曜日" ;;
+esac
+
+re_zero
+full="$year年$month月$day日(${kanji::1})"
+clock="$ampm$hour:$minute"
+
+echo "$full"

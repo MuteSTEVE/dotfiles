@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Get uptime in seconds
+uptime_seconds=$(awk '{print int($1)}' /proc/uptime)
+
+# Calculate days, hours, minutes
+days=$(( uptime_seconds / 86400 ))
+hours=$(( (uptime_seconds % 86400) / 3600 ))
+minutes=$(( (uptime_seconds % 3600) / 60 ))
+
+# Build output dynamically
+output=""
+
+if [[ $days -ne 0 ]]; then
+  output+="${days}d"
+fi
+
+if [[ $hours -ne 0 ]]; then
+  if [[ -n $output ]]; then
+    output+="-"
+  fi
+  output+="${hours}h"
+fi
+
+if [[ $minutes -ne 0 ]]; then
+  if [[ -n $output ]]; then
+    output+="-"
+  fi
+  output+="${minutes}m"
+fi
+
+# If uptime is less than a minute (just rebooted)
+if [[ -z $output ]]; then
+  output="0m"
+fi
+
+# Output result
+echo "$output"
