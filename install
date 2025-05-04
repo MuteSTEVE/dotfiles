@@ -9,106 +9,142 @@ if [[ ! " ${FAMILY[*]} " =~ " $DISTRO " ]]; then
   exit
 fi
 
-## Installing packages
-PACMAN=(
-  "fcitx5"
-  "fcitx5-configtool"
-  "fcitx5-mozc"
-  "ffmpeg"
-  "fzf"
-  "grim"
-  "hyprland"
-  "lazygit"
-  "libnotify"
-  "man"
-  "mpv"
-  "npm"
-  "ocrfeeder"
-  "pacman-contrib"
-  "pavucontrol"
-  "pcmanfm"
-  "peazip"
-  "pipewire"
-  "pipewire-pulse"
-  "ripgrep"
-  "slurp"
-  "swappy"
-  "swaybg"
-  "swaync"
-  "tesseract"
-  "tesseract-data-chi_sim"
-  "tesseract-data-chi_sim_vert"
-  "tesseract-data-chi_tra"
-  "tesseract-data-chi_tra_vert"
-  "tesseract-data-jpn"
-  "tesseract-data-jpn_vert"
-  "tmux"
-  "unzip"
-  "waybar"
-  "wireplumber"
-  "wl-clipboard"
-  "wofi"
-)
-YAY=(
-  "anki-bin"
-  "kwindowsystem"
-  "nerd-fonts"
-  "noto-fonts-cjk" 
-  "noto-fonts-emoji" 
-  "python-pywal16"
-  "ttf-font-awesome"
-  "ttf-hack-nerd"
-  "ttf-icomoon-feather"
-  "ttf-iosevka-nerd"
-  "ttf-jetbrains-mono-nerd"
-  "wl-color-picker"
-  "zen-browser-bin"
-)
+# Check if yay is installed
+if [[ ! -f /usr/bin/yay ]]; then
+  pushd /tmp/
+  git clone https://aur.archlinux.org/yay.git
+  pushd /tmp/yay/
+  makepkg -si
+  rmdir /tmp/yay/
+  popd && popd
+fi
 
-## Wallpaper from wallhaven.cc
-WALL=(
-  "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
-  "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
-  "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
-  "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # Blue Archive - Izuna
-  "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # Blue Archive - Izuna
-  "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # Blue Archive - Koyuki
-  "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Blue Archive - Momoi
-  "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Blue Archive - Momoi & Midori
-  "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Blue Archive - Momoi & Midori
-  "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # Blue Archive - Mutsuki
-  "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # Blue Archive - Mutsuki
-  "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # Blue Archive - Mutsuki
-)
-
-## To be copied
-CONF=(
-  ".bashrc"
-  ".gitconfig"
-  ".config/"
-  ".local/"
-)
-
-packages() {
-  # Check if yay is installed
-  if [[ ! -f /usr/bin/yay ]]; then
-    pushd /tmp/
-    git clone https://aur.archlinux.org/yay.git
-    pushd /tmp/yay/
-    makepkg -si
-    rmdir /tmp/yay/
-    popd && popd
-  fi
-
-  for package in "${PACMAN[@]}"; do
-    sudo pacman -S --noconfirm "${package}"
-  done
-  for package in "${YAY[@]}"; do
-    yay -S --noconfirm "${package}"
+YAY() {
+  local package=("$@")
+  for install in "${package[@]}"
+  do
+    yay -S --noconfirm "${install}"
   done
 }
 
+hyprland_packages() {
+  local list=(
+    "grim"
+    "hyprland"
+    "libnotify"
+    "slurp"
+    "swappy"
+    "swaybg"
+    "swaync"
+    "waybar"
+    "wl-clipboard"
+    "wofi"
+  )
+
+  YAY "${list}"
+}
+
+font_packages() {
+  local list=(
+    "nerd-fonts"
+    "noto-fonts-cjk" 
+    "noto-fonts-emoji" 
+    "ttf-font-awesome"
+    "ttf-hack-nerd"
+    "ttf-icomoon-feather"
+    "ttf-iosevka-nerd"
+    "ttf-jetbrains-mono-nerd"
+  )
+
+  YAY "${list}"
+}
+
+essential_packages() {
+  local list=(
+    "fzf"
+    "kwindowsystem"
+    "lazygit"
+    "man"
+    "npm"
+    "pacman-contrib"
+    "pcmanfm"
+    "pipewire"
+    "pipewire-pulse"
+    "pwvucontrol"
+    "python-pywal16"
+    "ripgrep"
+    "tmux"
+    "unzip"
+    "wireplumber"
+    "wl-color-picker"
+    "zen-browser-bin"
+  )
+
+  YAY "${list}"
+
+  local DIR="$HOME/.config/nvim/"
+  if [[ -z "$(ls -A "${DIR}")" ]]; then
+    git clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
+  fi
+}
+
+japanese_packages() {
+  local list=(
+    "anki-bin"
+    "fcitx5"
+    "fcitx5-configtool"
+    "fcitx5-mozc"
+    "ffmpeg"
+    "mpv"
+    "ocrfeeder"
+    "tesseract"
+    "tesseract-data-chi_sim"
+    "tesseract-data-chi_sim_vert"
+    "tesseract-data-chi_tra"
+    "tesseract-data-chi_tra_vert"
+    "tesseract-data-jpn"
+    "tesseract-data-jpn_vert"
+  )
+
+  YAY "${list}"
+
+  local DIR=$HOME/.config/mpv/scripts/
+  mkdir -p $DIR
+  git clone 'https://github.com/Ajatt-Tools/mpvacious.git' $DIR/subs2srs
+}
+
+## To be copied
+copy() {
+  local list=(
+    ".bashrc"
+    ".gitconfig"
+    ".config/"
+    ".local/"
+  )
+
+  for copy in "${list[@]}"; do
+    cp -r "$PWD/${copy}" $HOME/
+  done
+  chmod +x $HOME/.local/bin/*
+}
+
+## Wallpaper from wallhaven.cc
 wallpaper() {
+  WALL=(
+    "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
+    "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
+    "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
+    "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # Blue Archive - Izuna
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # Blue Archive - Izuna
+    "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # Blue Archive - Koyuki
+    "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Blue Archive - Momoi
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Blue Archive - Momoi & Midori
+    "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Blue Archive - Momoi & Midori
+    "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # Blue Archive - Mutsuki
+    "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # Blue Archive - Mutsuki
+    "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # Blue Archive - Mutsuki
+  )
+
   for url in "${WALL[@]}"; do
     local DIR=$HOME/.local/wallpapers/
     mkdir -p $DIR
@@ -116,30 +152,12 @@ wallpaper() {
   done
 }
 
-copy() {
-  for copy in "${CONF[@]}"; do
-    cp -r "$PWD/${copy}" $HOME/
-  done
-  chmod +x $HOME/.local/bin/*
-}
-
-nvim() {
-  NVIM_DIR="$HOME/.config/nvim/"
-  if [[ -z "$(ls -A "${NVIM_DIR}")" ]]; then
-    git clone https://github.com/MuteSTEVE/nvim.git "${NVIM_DIR}"
-  fi
-}
-
-mpvacious(){
-  mkdir -p $HOME/.config/mpv/scripts/
-  git clone 'https://github.com/Ajatt-Tools/mpvacious.git' ~/.config/mpv/scripts/subs2srs
-}
-
 main() {
-  packages
+  hyprland_packages
+  font_packages
+  essential_packages
+  japanese_packages
   copy
   wallpaper
-  nvim
-  mpvacious
 }
 main
