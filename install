@@ -1,11 +1,13 @@
 #!/bin/bash
 
-## Exclusive to arch
-#DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
-#if [[ ${DISTRO} != 'arch' ]]; then
-#  echo "Sorry, Arch linux only"
-#  exit
-#fi
+# Exclusive to arch
+FAMILY=("arch" "artix" "endeavouros")
+DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+
+if [[ ! " ${FAMILY[*]} " =~ " $DISTRO " ]]; then
+  echo "Sorry, Arch Linux only"
+  exit
+fi
 
 ## Installing packages
 PACMAN=(
@@ -16,8 +18,6 @@ PACMAN=(
   "fzf"
   "grim"
   "hyprland"
-  "hyprpaper"
-  "hyprpicker"
   "lazygit"
   "libnotify"
   "man"
@@ -33,6 +33,7 @@ PACMAN=(
   "ripgrep"
   "slurp"
   "swappy"
+  "swaybg"
   "swaync"
   "tesseract"
   "tesseract-data-chi_sim"
@@ -60,6 +61,7 @@ YAY=(
   "ttf-icomoon-feather"
   "ttf-iosevka-nerd"
   "ttf-jetbrains-mono-nerd"
+  "wl-color-picker"
   "zen-browser-bin"
 )
 
@@ -108,8 +110,9 @@ packages() {
 
 wallpaper() {
   for url in "${WALL[@]}"; do
-    mkdir -p $HOME/Pictures/
-    curl -O --output-dir $HOME/Pictures/ "${url}"
+    local DIR=$HOME/.local/wallpapers/
+    mkdir -p $DIR
+    curl -O --output-dir $DIR "${url}"
   done
 }
 
