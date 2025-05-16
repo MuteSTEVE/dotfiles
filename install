@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # Exclusive to arch
-FAMILY=("arch" "artix" "endeavouros")
+FAMILY=("arch" "artix" "endeavouros" "manjaro" "garuda")
 DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
 
-if [[ ! " ${FAMILY[*]} " =~ " $DISTRO " ]]; then
+if [[ ! ${FAMILY[@]} =~ $DISTRO ]]; then
   echo "Sorry, Arch Linux only"
   exit
 fi
 
 # Check if yay is installed
-if [[ -z /usr/bin/yay ]]; then
+if ! command -v yay 2>&1 >/dev/null; then
   pushd /tmp/
   git clone https://aur.archlinux.org/yay.git
   pushd /tmp/yay/
   makepkg -si
-  rmdir /tmp/yay/
+  rm -rf /tmp/yay/
   popd && popd
 fi
 
@@ -68,17 +68,20 @@ PackagesFont() {
 
 PackagesEssential() {
   local list_pacman=(
+    "brightnessctl"
     "fzf"
     "lazygit"
     "man"
     "npm"
     "pacman-contrib"
-    "thunar"
     "pipewire"
     "pipewire-pulse"
     "pwvucontrol"
     "ripgrep"
+    "thunar"
     "tmux"
+    "udiskie"
+    "udisks2"
     "unzip"
     "wireplumber"
   )
@@ -121,8 +124,8 @@ PackagesJapanese() {
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
-    mkdir -p $DIR
-    git clone 'https://github.com/Ajatt-Tools/mpvacious.git' $DIR/subs2srs
+    mkdir -p "$DIR"
+    git clone 'https://github.com/Ajatt-Tools/mpvacious.git' "$DIR/subs2srs"
   fi
 }
 
@@ -136,7 +139,7 @@ ConfigDirectories() {
   )
 
   for copy in "${list[@]}"; do
-    cp -r "$PWD/${copy}" $HOME/
+    cp -rn "$PWD/${copy}" $HOME/
   done
   chmod +x $HOME/.local/bin/*
 }
@@ -160,19 +163,19 @@ DownloadWallpapers() {
 
   local DIR=$HOME/.local/wallpapers/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
-    mkdir -p $DIR
+    mkdir -p "$DIR"
     for img in "${WALLS[@]}"; do
-      curl -O --output-dir $DIR "${img}"
+      curl -O --output-dir "$DIR" "${img}"
     done
   fi
 }
 
 main() {
-  ConfigDirectories
-  DownloadWallpapers
-  PackagesEssential
-  PackagesFont
-  PackagesHyprland
-  PackagesJapanese
+  #ConfigDirectories
+  #DownloadWallpapers
+  #PackagesEssential
+  #PackagesFont
+  #PackagesHyprland
+  #PackagesJapanese
 }
 main
