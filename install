@@ -171,11 +171,11 @@ DownloadWallpapers() {
 }
 
 main() {
-  #ConfigDirectories
-  #DownloadWallpapers
-  #PackagesEssential
-  #PackagesFont
-  #PackagesHyprland
-  #PackagesJapanese
+  ConfigDirectories
+  DownloadWallpapers
+  PackagesEssential
+  PackagesFont
+  PackagesHyprland
+  PackagesJapanese
 }
 main
