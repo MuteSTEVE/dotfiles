@@ -26,9 +26,16 @@ YAY() {
     yay -S --noconfirm "${install}"
   done
 }
+PACMAN() {
+  local package=("$@")
+  for install in "${package[@]}"
+  do
+    sudo pacman -S --noconfirm "${install}"
+  done
+}
 
 PackagesHyprland() {
-  local list=(
+  local list_pacman=(
     "grim"
     "hyprland"
     "libnotify"
@@ -41,11 +48,11 @@ PackagesHyprland() {
     "wofi"
   )
 
-  YAY "${list}"
+  PACMAN "${list_pacman[@]}"
 }
 
 PackagesFont() {
-  local list=(
+  local list_yay=(
     "nerd-fonts"
     "noto-fonts-cjk" 
     "noto-fonts-emoji" 
@@ -56,13 +63,12 @@ PackagesFont() {
     "ttf-jetbrains-mono-nerd"
   )
 
-  YAY "${list}"
+  YAY "${list_yay[@]}"
 }
 
 PackagesEssential() {
-  local list=(
+  local list_pacman=(
     "fzf"
-    "kwindowsystem"
     "lazygit"
     "man"
     "npm"
@@ -71,16 +77,22 @@ PackagesEssential() {
     "pipewire"
     "pipewire-pulse"
     "pwvucontrol"
-    "python-pywal16"
     "ripgrep"
     "tmux"
     "unzip"
     "wireplumber"
+  )
+
+  local list_yay=(
+    "anki-bin"
+    "kwindowsystem"
+    "python-pywal16"
     "wl-color-picker"
     "zen-browser-bin"
   )
 
-  YAY "${list}"
+  PACMAN "${list_pacman[@]}"
+  YAY "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
   if [[ -z "$(ls -A "${DIR}")" ]]; then
@@ -89,8 +101,7 @@ PackagesEssential() {
 }
 
 PackagesJapanese() {
-  local list=(
-    "anki-bin"
+  local list_pacman=(
     "fcitx5"
     "fcitx5-configtool"
     "fcitx5-mozc"
@@ -106,7 +117,7 @@ PackagesJapanese() {
     "tesseract-data-jpn_vert"
   )
 
-  YAY "${list}"
+  PACMAN "${list_pacman[@]}"
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
@@ -149,8 +160,10 @@ wallpaper() {
 
   for url in "${WALL[@]}"; do
     local DIR=$HOME/.local/wallpapers/
-    mkdir -p $DIR
-    curl -O --output-dir $DIR "${url}"
+    if [[ -z "$(ls -A "${DIR}")" ]]; then
+      mkdir -p $DIR
+      curl -O --output-dir $DIR "${url}"
+    fi
   done
 }
 
