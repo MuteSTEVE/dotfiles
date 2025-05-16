@@ -73,7 +73,7 @@ PackagesEssential() {
     "man"
     "npm"
     "pacman-contrib"
-    "pcmanfm"
+    "thunar"
     "pipewire"
     "pipewire-pulse"
     "pwvucontrol"
