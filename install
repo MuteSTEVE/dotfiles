@@ -10,7 +10,7 @@ if [[ ! ${FAMILY[@]} =~ $DISTRO ]]; then
 fi
 
 # Check if yay is installed
-if ! command -v yay 2>&1 >/dev/null; then
+if ! command -v yay &>/dev/null; then
   pushd /tmp/
   git clone https://aur.archlinux.org/yay.git
   pushd /tmp/yay/
@@ -23,14 +23,18 @@ YAY() {
   local package=("$@")
   for install in "${package[@]}"
   do
-    yay -S --noconfirm "${install}"
+    if ! yay -Q "${install}" &>/dev/null; then
+      yay -S --noconfirm "${install}"
+    fi
   done
 }
 PACMAN() {
   local package=("$@")
   for install in "${package[@]}"
   do
-    sudo pacman -S --noconfirm "${install}"
+    if ! pacman -Q "${install}" &>/dev/null; then
+      sudo pacman -S --noconfirm "${install}"
+    fi
   done
 }
 
