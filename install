@@ -10,7 +10,7 @@ if [[ ! " ${FAMILY[*]} " =~ " $DISTRO " ]]; then
 fi
 
 # Check if yay is installed
-if [[ ! -f /usr/bin/yay ]]; then
+if [[ -z /usr/bin/yay ]]; then
   pushd /tmp/
   git clone https://aur.archlinux.org/yay.git
   pushd /tmp/yay/
@@ -127,7 +127,7 @@ PackagesJapanese() {
 }
 
 ## To be copied
-copy() {
+ConfigDirectories() {
   local list=(
     ".bashrc"
     ".gitconfig"
@@ -142,8 +142,8 @@ copy() {
 }
 
 ## Wallpaper from wallhaven.cc
-wallpaper() {
-  WALL=(
+DownloadWallpapers() {
+  WALLS=(
     "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
     "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
     "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
@@ -158,21 +158,21 @@ wallpaper() {
     "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # Blue Archive - Mutsuki
   )
 
-  for url in "${WALL[@]}"; do
-    local DIR=$HOME/.local/wallpapers/
-    if [[ -z "$(ls -A "${DIR}")" ]]; then
-      mkdir -p $DIR
-      curl -O --output-dir $DIR "${url}"
-    fi
-  done
+  local DIR=$HOME/.local/wallpapers/
+  if [[ -z "$(ls -A "${DIR}")" ]]; then
+    mkdir -p $DIR
+    for img in "${WALLS[@]}"; do
+      curl -O --output-dir $DIR "${img}"
+    done
+  fi
 }
 
 main() {
-  PackagesHyprland
-  PackagesFont
+  ConfigDirectories
+  DownloadWallpapers
   PackagesEssential
+  PackagesFont
+  PackagesHyprland
   PackagesJapanese
-  copy
-  wallpaper
 }
 main
