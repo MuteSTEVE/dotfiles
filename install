@@ -19,22 +19,25 @@ if ! command -v yay &>/dev/null; then
   popd && popd
 fi
 
-YAY() {
-  local package=("$@")
-  for install in "${package[@]}"
-  do
-    if ! yay -Q "${install}" &>/dev/null; then
-      yay -S --noconfirm "${install}"
+OperationWith() {
+  local flag="$1"
+  shift
+  local list=("$@")
+
+  case $flag in
+    "-y") local installWith="yay" ;;
+    "-p") local installWith="pacman" ;;
+  esac
+
+  for package in "${list[@]}"; do
+    if $installWith -Q "${package}" &>/dev/null; then   # Check if the package is already installed
+      continue
     fi
-  done
-}
-PACMAN() {
-  local package=("$@")
-  for install in "${package[@]}"
-  do
-    if ! pacman -Q "${install}" &>/dev/null; then
-      sudo pacman -S --noconfirm "${install}"
-    fi
+
+    case $installWith in
+      "yay") $installWith -S --noconfirm "${package}" ;;
+      "pacman") sudo $installWith -S --noconfirm "${package}" ;;
+    esac
   done
 }
 
@@ -52,7 +55,7 @@ PackagesHyprland() {
     "wofi"
   )
 
-  PACMAN "${list_pacman[@]}"
+  OperationWith -p "${list_pacman[@]}"
 }
 
 PackagesFont() {
@@ -67,7 +70,7 @@ PackagesFont() {
     "ttf-jetbrains-mono-nerd"
   )
 
-  YAY "${list_yay[@]}"
+  OperationWith -y "${list_yay[@]}"
 }
 
 PackagesEssential() {
@@ -98,8 +101,8 @@ PackagesEssential() {
     "zen-browser-bin"
   )
 
-  PACMAN "${list_pacman[@]}"
-  YAY "${list_yay[@]}"
+  OperationWith -p "${list_pacman[@]}"
+  OperationWith -y "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
   if [[ -z "$(ls -A "${DIR}")" ]]; then
@@ -124,7 +127,7 @@ PackagesJapanese() {
     "tesseract-data-jpn_vert"
   )
 
-  PACMAN "${list_pacman[@]}"
+  OperationWith -p "${list_pacman[@]}"
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
