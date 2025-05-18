@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Exclusive to arch
 FAMILY=("arch" "artix" "endeavouros" "manjaro" "garuda")
@@ -9,17 +10,29 @@ if [[ ! ${FAMILY[@]} =~ $DISTRO ]]; then
   exit
 fi
 
+git_Clone() {
+  local url="$1"
+  local clone_dir="$2"
+  local name=$(basename "$url")
+
+  if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
+    echo "Failed to clone $NAME, please check your internet connection" 
+    exit
+  fi
+}
+
 # Check if yay is installed
 if ! command -v yay &>/dev/null; then
-  pushd /tmp/
-  git clone https://aur.archlinux.org/yay.git
-  pushd /tmp/yay/
+  local DIR="/tmp/yay"
+  git_Clone https://aur.archlinux.org/yay.git "${DIR}"
+
+  pushd "${DIR}"
   makepkg -si
-  rm -rf /tmp/yay/
-  popd && popd
+  popd
+  rm -rf "${DIR}"
 fi
 
-OperationWith() {
+operation_With() {
   local flag="$1"
   shift
   local list=("$@")
@@ -30,13 +43,15 @@ OperationWith() {
   esac
 
   for package in "${list[@]}"; do
-    if $installWith -Q "${package}" &>/dev/null; then   # Check if the package is already installed
+    # Check if the package is already installed
+    if $installWith -Q "${package}" &>/dev/null; then
       continue
     fi
 
+    # Don't use sudo on yay
     case $installWith in
-      "yay") $installWith -S --noconfirm "${package}" ;;
-      "pacman") sudo $installWith -S --noconfirm "${package}" ;;
+      "yay") $installWith -S --noconfirm "${package}";;
+      "pacman") sudo $installWith -S --noconfirm "${package}";;
     esac
   done
 }
@@ -55,7 +70,7 @@ PackagesHyprland() {
     "wofi"
   )
 
-  OperationWith -p "${list_pacman[@]}"
+  operation_With -p "${list_pacman[@]}"
 }
 
 PackagesFont() {
@@ -70,7 +85,7 @@ PackagesFont() {
     "ttf-jetbrains-mono-nerd"
   )
 
-  OperationWith -y "${list_yay[@]}"
+  operation_With -y "${list_yay[@]}"
 }
 
 PackagesEssential() {
@@ -101,12 +116,12 @@ PackagesEssential() {
     "zen-browser-bin"
   )
 
-  OperationWith -p "${list_pacman[@]}"
-  OperationWith -y "${list_yay[@]}"
+  operation_With -p "${list_pacman[@]}"
+  operation_With -y "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
   if [[ -z "$(ls -A "${DIR}")" ]]; then
-    git clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
+    git_Clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
   fi
 }
 
@@ -127,12 +142,12 @@ PackagesJapanese() {
     "tesseract-data-jpn_vert"
   )
 
-  OperationWith -p "${list_pacman[@]}"
+  operation_With -p "${list_pacman[@]}"
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
     mkdir -p "$DIR"
-    git clone 'https://github.com/Ajatt-Tools/mpvacious.git' "$DIR/subs2srs"
+    git_Clone 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
   fi
 }
 
