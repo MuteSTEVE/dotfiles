@@ -3,7 +3,7 @@
 # Exclusive to arch
 ArchDistro() {
   local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
-  local distro=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+  local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\n')
 
   if [[ ! ${family[@]} =~ $distro ]]; then
     echo "Sorry, Arch Linux only"
@@ -12,10 +12,10 @@ ArchDistro() {
 }
 
 # Failed clone error handling
-git_clone() {
+clone_git() {
   local url="$1"
   local clone_dir="$2"
-  local name=$(basename "$url")
+  local name=$(basename "$url" | cut -d '.' -f1 | tr -d '\n')
 
   if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
     echo "Failed to clone $name, please check your internet connection" 
@@ -28,7 +28,7 @@ operation_with() {
   # Check if yay is installed first
   if ! command -v yay &>/dev/null; then
     local DIR="/tmp/yay"
-    git_clone https://aur.archlinux.org/yay.git "${DIR}"
+    clone_git https://aur.archlinux.org/yay.git "${DIR}"
 
     pushd "${DIR}"
     makepkg -si
@@ -103,6 +103,7 @@ PackagesEssential() {
     "udisks2"
     "unzip"
     "waybar"
+    "wget"
     "wireplumber"
     "wl-clipboard"
     "wofi"
@@ -120,7 +121,7 @@ PackagesEssential() {
 
   local DIR="$HOME/.config/nvim/"
   if [[ -z "$(ls -A "${DIR}")" ]]; then
-    git_clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
+    clone_git https://github.com/MuteSTEVE/nvim.git "${DIR}"
   fi
 }
 
@@ -151,11 +152,11 @@ PackagesJapanese() {
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
     mkdir -p "$DIR"
-    git_clone 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
+    clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
   fi
 }
 
-## To be copied
+# Copy config files to $HOME if they don't already exist
 ConfigDirectories() {
   local list=(
     ".bashrc"
