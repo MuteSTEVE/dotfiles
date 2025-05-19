@@ -1,76 +1,66 @@
 #!/bin/bash
-set -e
 
 # Exclusive to arch
-FAMILY=("arch" "artix" "endeavouros" "manjaro" "garuda")
-DISTRO=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+ArchDistro() {
+  local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
+  local distro=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
 
-if [[ ! ${FAMILY[@]} =~ $DISTRO ]]; then
-  echo "Sorry, Arch Linux only"
-  exit
-fi
+  if [[ ! ${family[@]} =~ $distro ]]; then
+    echo "Sorry, Arch Linux only"
+    exit
+  fi
+}
 
-git_Clone() {
+# Failed clone error handling
+git_clone() {
   local url="$1"
   local clone_dir="$2"
   local name=$(basename "$url")
 
   if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
-    echo "Failed to clone $NAME, please check your internet connection" 
+    echo "Failed to clone $name, please check your internet connection" 
     exit
   fi
 }
 
-# Check if yay is installed
-if ! command -v yay &>/dev/null; then
-  local DIR="/tmp/yay"
-  git_Clone https://aur.archlinux.org/yay.git "${DIR}"
+# Install with yay or pacman
+operation_with() {
+  # Check if yay is installed first
+  if ! command -v yay &>/dev/null; then
+    local DIR="/tmp/yay"
+    git_clone https://aur.archlinux.org/yay.git "${DIR}"
 
-  pushd "${DIR}"
-  makepkg -si
-  popd
-  rm -rf "${DIR}"
-fi
+    pushd "${DIR}"
+    makepkg -si
+    popd
+    rm -rf "${DIR}"
+  fi
 
-operation_With() {
   local flag="$1"
   shift
   local list=("$@")
 
   case $flag in
     "-y") local installWith="yay" ;;
-    "-p") local installWith="pacman" ;;
+    "-p") local installWith="sudo pacman" ;;
   esac
 
   for package in "${list[@]}"; do
-    # Check if the package is already installed
-    if $installWith -Q "${package}" &>/dev/null; then
+    if ! $installWith -Ss "${package}" &>/dev/null; then
+      echo "${package} coulnd't be found, maybe there's typo?"
       continue
     fi
 
-    # Don't use sudo on yay
-    case $installWith in
-      "yay") $installWith -S --noconfirm "${package}";;
-      "pacman") sudo $installWith -S --noconfirm "${package}";;
-    esac
+    if $installWith -Q "${package}" &>/dev/null; then
+      echo "${package} is already installed, skipping"
+      continue
+    fi
+
+    if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
+      echo "Failed to install ${package}, please check your internet connection"
+      exit
+    fi
   done
-}
-
-PackagesHyprland() {
-  local list_pacman=(
-    "grim"
-    "hyprland"
-    "libnotify"
-    "slurp"
-    "swappy"
-    "swaybg"
-    "swaync"
-    "waybar"
-    "wl-clipboard"
-    "wofi"
-  )
-
-  operation_With -p "${list_pacman[@]}"
 }
 
 PackagesFont() {
@@ -85,14 +75,17 @@ PackagesFont() {
     "ttf-jetbrains-mono-nerd"
   )
 
-  operation_With -y "${list_yay[@]}"
+  operation_with -y "${list_yay[@]}"
 }
 
 PackagesEssential() {
   local list_pacman=(
     "brightnessctl"
     "fzf"
+    "grim"
+    "hyprland"
     "lazygit"
+    "libnotify"
     "man"
     "npm"
     "pacman-contrib"
@@ -100,28 +93,34 @@ PackagesEssential() {
     "pipewire-pulse"
     "pwvucontrol"
     "ripgrep"
+    "slurp"
+    "swappy"
+    "swaybg"
+    "swaync"
     "thunar"
     "tmux"
     "udiskie"
     "udisks2"
     "unzip"
+    "waybar"
     "wireplumber"
+    "wl-clipboard"
+    "wofi"
   )
 
   local list_yay=(
-    "anki-bin"
     "kwindowsystem"
     "python-pywal16"
     "wl-color-picker"
     "zen-browser-bin"
   )
 
-  operation_With -p "${list_pacman[@]}"
-  operation_With -y "${list_yay[@]}"
+  operation_with -p "${list_pacman[@]}"
+  operation_with -y "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
   if [[ -z "$(ls -A "${DIR}")" ]]; then
-    git_Clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
+    git_clone https://github.com/MuteSTEVE/nvim.git "${DIR}"
   fi
 }
 
@@ -142,12 +141,17 @@ PackagesJapanese() {
     "tesseract-data-jpn_vert"
   )
 
-  operation_With -p "${list_pacman[@]}"
+  local list_yay=(
+    "anki-bin"
+  )
+
+  operation_with -p "${list_pacman[@]}"
+  operation_with -y "${list_yay[@]}"
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ -z "$(ls -A "${DIR}")" ]]; then
     mkdir -p "$DIR"
-    git_Clone 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
+    git_clone 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
   fi
 }
 
@@ -169,18 +173,19 @@ ConfigDirectories() {
 ## Wallpaper from wallhaven.cc
 DownloadWallpapers() {
   WALLS=(
-    "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # Blue Archive - Arisu
-    "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # Blue Archive - Arisu
-    "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # Blue Archive - Izuna
-    "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # Blue Archive - Izuna
-    "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # Blue Archive - Izuna
-    "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # Blue Archive - Koyuki
-    "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # Blue Archive - Momoi
-    "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # Blue Archive - Momoi & Midori
-    "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # Blue Archive - Momoi & Midori
-    "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # Blue Archive - Mutsuki
-    "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # Blue Archive - Mutsuki
-    "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # Blue Archive - Mutsuki
+    # YTTA
+    "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # arisu_(blue_archive)
+    "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # arisu_(blue_archive)
+    "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # koyuki_(blue_archive)
+    "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # momoi_(blue_archive)
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # momoi_(blue_archive) midori_(blue_archive)
+    "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # momoi_(blue_archive) midori_(blue_archive)
+    "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # mutsuki_(blue_archive)
+    "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # mutsuki_(blue_archive)
+    "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # mutsuki_(blue_archive)
   )
 
   local DIR=$HOME/.local/wallpapers/
@@ -193,11 +198,11 @@ DownloadWallpapers() {
 }
 
 main() {
+  ArchDistro
   ConfigDirectories
   DownloadWallpapers
-  PackagesEssential
   PackagesFont
-  PackagesHyprland
+  PackagesEssential
   PackagesJapanese
 }
 main
