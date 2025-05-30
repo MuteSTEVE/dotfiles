@@ -127,7 +127,7 @@ PackagesEssential() {
   operation_with -y "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
-  if [[ -z "$(ls -A "${DIR}")" ]]; then
+  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
     clone_git https://github.com/MuteSTEVE/nvim.git "${DIR}"
   fi
 }
@@ -172,7 +172,7 @@ PackagesJapanese() {
   operation_with -y "${list_yay[@]}"
 
   local DIR=$HOME/.config/mpv/scripts/
-  if [[ -z "$(ls -A "${DIR}")" ]]; then
+  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
     mkdir -p "$DIR"
     clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
   fi
@@ -187,6 +187,13 @@ ConfigDirectories() {
     ".config/"
     ".local/"
   )
+
+  # Use ohmybash and change it's theme called "font" with modified ps1 prompt
+  local DIR="$HOME/.oh-my-bash/"
+  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+    sed -i 's/\$(clock_prompt)/ /g' "$DIR/themes/font/font.theme.sh"
+  fi
 
   for copy in "${list[@]}"; do
     cp -rn "$scriptDIR/${copy}" $HOME/
@@ -213,7 +220,7 @@ DownloadWallpapers() {
   )
 
   local DIR=$HOME/.local/wallpapers/
-  if [[ -z "$(ls -A "${DIR}")" ]]; then
+  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
     mkdir -p "$DIR"
     for img in "${WALLS[@]}"; do
       curl -O --output-dir "$DIR" "${img}"
