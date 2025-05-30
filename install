@@ -120,7 +120,6 @@ PackagesEssential() {
     "udisks2"
     "unzip"
     "wget"
-    "wireplumber"
   )
 
   local list_yay=(
