@@ -65,27 +65,48 @@ operation_with() {
 
 PackagesFont() {
   local list_yay=(
-    "nerd-fonts"
-    "noto-fonts-cjk" 
     "noto-fonts-emoji" 
+    "noto-serif-cjk" 
     "ttf-font-awesome"
     "ttf-hack-nerd"
-    "ttf-icomoon-feather"
-    "ttf-iosevka-nerd"
     "ttf-jetbrains-mono-nerd"
+    "ttf-monapo"
   )
 
   operation_with -y "${list_yay[@]}"
+}
+
+PackagesAudio() {
+  local list_pipewire=(
+    "pavucontrol"
+    "pipewire"
+    "pipewire-pulse"
+    "wireplumber"
+  )
+
+  local list_pulseaudio=(
+    "pavucontrol"
+    "pulseaudio"
+    "pulseaudio-alsa"
+    "pulseaudio-bluetooth"
+  )
+
+  local audio_flag="$1"
+  declare -n selected_list
+
+  case $audio_flag in
+    "-pa") selected_list="list_pulseaudio" ;;
+    "-pw") selected_list="list_pipewire" ;;
+  esac
+
+  operation_with -p "${selected_list[@]}"
 }
 
 PackagesEssential() {
   local list_pacman=(
     "brightnessctl"
     "fzf"
-    "grim"
-    "hyprland"
     "lazygit"
-    "libnotify"
     "man"
     "npm"
     "pacman-contrib"
@@ -93,26 +114,16 @@ PackagesEssential() {
     "pipewire-pulse"
     "pwvucontrol"
     "ripgrep"
-    "slurp"
-    "swappy"
-    "swaybg"
-    "swaync"
     "thunar"
     "tmux"
     "udiskie"
     "udisks2"
     "unzip"
-    "waybar"
     "wget"
     "wireplumber"
-    "wl-clipboard"
-    "wofi"
   )
 
   local list_yay=(
-    "kwindowsystem"
-    "python-pywal16"
-    "wl-color-picker"
     "zen-browser-bin"
   )
 
@@ -125,6 +136,29 @@ PackagesEssential() {
   fi
 }
 
+PackagesHyprland() {
+  local list_pacman=(
+    "grim"
+    "hyprland"
+    "libnotify"
+    "slurp"
+    "swappy"
+    "swaybg"
+    "swaync"
+    "waybar"
+    "wl-clipboard"
+    "wofi"
+  )
+
+  local list_yay=(
+    "kwindowsystem"
+    "python-pywal16"
+    "wl-color-picker"
+  )
+
+  operation_with -p "${list_pacman[@]}"
+}
+
 PackagesJapanese() {
   local list_pacman=(
     "fcitx5"
@@ -132,14 +166,6 @@ PackagesJapanese() {
     "fcitx5-mozc"
     "ffmpeg"
     "mpv"
-    "ocrfeeder"
-    "tesseract"
-    "tesseract-data-chi_sim"
-    "tesseract-data-chi_sim_vert"
-    "tesseract-data-chi_tra"
-    "tesseract-data-chi_tra_vert"
-    "tesseract-data-jpn"
-    "tesseract-data-jpn_vert"
   )
 
   local list_yay=(
@@ -158,6 +184,7 @@ PackagesJapanese() {
 
 # Copy config files to $HOME if they don't already exist
 ConfigDirectories() {
+  local scriptDIR=$(find $HOME -type d dotfiles)
   local list=(
     ".bashrc"
     ".gitconfig"
@@ -166,7 +193,7 @@ ConfigDirectories() {
   )
 
   for copy in "${list[@]}"; do
-    cp -rn "$PWD/${copy}" $HOME/
+    cp -rn "$scriptDIR/${copy}" $HOME/
   done
   chmod +x $HOME/.local/bin/*
 }
@@ -202,8 +229,11 @@ main() {
   ArchDistro
   ConfigDirectories
   DownloadWallpapers
+
   PackagesFont
+  PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
   PackagesEssential
   PackagesJapanese
+  #PackagesHyprland
 }
 main
