@@ -3,7 +3,7 @@
 # Exclusive to arch
 ArchDistro() {
   local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
-  local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\n')
+  local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
 
   if [[ ! ${family[@]} =~ $distro ]]; then
     echo "Sorry, Arch Linux only"
@@ -15,7 +15,7 @@ ArchDistro() {
 clone_git() {
   local url="$1"
   local clone_dir="$2"
-  local name=$(basename "$url" | cut -d '.' -f1 | tr -d '\n')
+  local name=$(basename "$url" | cut -d '.' -f1)
 
   if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
     echo "Failed to clone $name, please check your internet connection" 
@@ -47,17 +47,17 @@ operation_with() {
 
   for package in "${list[@]}"; do
     if ! $installWith -Ss "${package}" &>/dev/null; then
-      echo "${package} coulnd't be found, maybe there's typo?"
+      echo "[TYPO] ${package} coulnd't be found, maybe there's typo?"
       continue
     fi
 
     if $installWith -Q "${package}" &>/dev/null; then
-      echo "${package} is already installed, skipping"
+      echo "[SKIP] ${package} is already installed, skipping"
       continue
     fi
 
     if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
-      echo "Failed to install ${package}, please check your internet connection"
+      echo "[FAILED] Failed to install ${package}, please check your internet connection"
       exit
     fi
   done
@@ -65,12 +65,12 @@ operation_with() {
 
 PackagesFont() {
   local list_yay=(
+    "noto-fonts-cjk" 
     "noto-fonts-emoji" 
-    "noto-serif-cjk" 
     "ttf-font-awesome"
     "ttf-hack-nerd"
     "ttf-jetbrains-mono-nerd"
-    "ttf-monapo"
+    "ttf-liberation"
   )
 
   operation_with -y "${list_yay[@]}"
@@ -91,6 +91,7 @@ PackagesAudio() {
     "pulseaudio-bluetooth"
   )
 
+  # use declare -n, selected_list is pointed variable out of PackagesAudio scope
   local audio_flag="$1"
   declare -n selected_list
 
@@ -134,6 +135,9 @@ PackagesEssential() {
 
 PackagesHyprland() {
   local list_pacman=(
+    "fcitx5"
+    "fcitx5-configtool"
+    "fcitx5-mozc"
     "grim"
     "hyprland"
     "libnotify"
@@ -144,6 +148,7 @@ PackagesHyprland() {
     "waybar"
     "wl-clipboard"
     "wofi"
+    "xdg-desktop-portal"
   )
 
   local list_yay=(
@@ -157,19 +162,35 @@ PackagesHyprland() {
 
 PackagesJapanese() {
   local list_pacman=(
-    "fcitx5"
-    "fcitx5-configtool"
-    "fcitx5-mozc"
     "ffmpeg"
     "mpv"
+    "ocrfeeder"
+    "tesseract"
+    "tesseract-data-eng"
+    "tesseract-data-chi_sim"
+    "tesseract-data-chi_sim_vert"
+    "tesseract-data-chi_tra"
+    "tesseract-data-chi_tra_vert"
+    "tesseract-data-jpn"
+    "tesseract-data-jpn_vert"
+    "tesseract-data-kor"
+    "tesseract-data-kor_vert"
   )
 
   local list_yay=(
     "anki-bin"
+    "textsnatcher-git"
   )
 
   operation_with -p "${list_pacman[@]}"
   operation_with -y "${list_yay[@]}"
+
+  # If PackagesHyprland is not installed, which contains fcitx5 packages
+  if ! pacman -Q | grep ^fcitx5 &>/dev/null; then
+    operation_with -p "fcitx"
+    operation_with -p "fcitx-configtool"
+    operation_with -p "fcitx-mozc"
+  fi
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
@@ -180,7 +201,7 @@ PackagesJapanese() {
 
 # Copy config files to $HOME if they don't already exist
 ConfigDirectories() {
-  local scriptDIR=$(find $HOME -type d dotfiles)
+  local dotfiles_DIR=$(find $HOME -type d -name dotfiles)
   local list=(
     ".bashrc"
     ".gitconfig"
@@ -188,15 +209,16 @@ ConfigDirectories() {
     ".local/"
   )
 
-  # Use ohmybash and change it's theme called "font" with modified ps1 prompt
-  local DIR="$HOME/.oh-my-bash/"
-  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
+  # Use ohmybash and change it's theme called "font" with slightly modified ps1 prompt
+  local omb_DIR="$HOME/.oh-my-bash/"
+  if [[ ! -d "$omb_DIR" ]] || [[ -z "$(ls -A "$omb_DIR")" ]]; then
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
     sed -i 's/\$(clock_prompt)/ /g' "$DIR/themes/font/font.theme.sh"
+    sed -i 's/\$(hostname)//g' "$DIR/themes/font/font.theme.sh"
   fi
 
   for copy in "${list[@]}"; do
-    cp -rn "$scriptDIR/${copy}" $HOME/
+    cp -rn "$dotfiles_DIR/${copy}" $HOME/
   done
   chmod +x $HOME/.local/bin/*
 }
@@ -223,7 +245,8 @@ DownloadWallpapers() {
   if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
     mkdir -p "$DIR"
     for img in "${WALLS[@]}"; do
-      curl -O --output-dir "$DIR" "${img}"
+      curl -O --output-dir "$DIR" "${img}" &>/dev/null
+      echo "[WP] Downloading wallpaper $(basename ${img}...)"
     done
   fi
 }
@@ -236,7 +259,7 @@ main() {
   PackagesFont
   PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
   PackagesEssential
+  PackagesHyprland
   PackagesJapanese
-  #PackagesHyprland
 }
 main
