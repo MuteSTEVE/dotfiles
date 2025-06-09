@@ -40,11 +40,10 @@ operation_with() {
   local flag="$1"
   shift
   local list=("$@")
-  alias pacman="sudo pacman"
 
   case $flag in
     "-y") local installWith="yay" ;;
-    "-p") local installWith="pacman" ;;
+    "-p") local installWith="sudo pacman" ;;
   esac
 
   for package in "${list[@]}"; do
@@ -58,7 +57,12 @@ operation_with() {
       continue
     fi
 
-    echo -e "[${installWith}] installing ${package}"
+    case $installWith in
+      "yay") local name_installWith="YAY" ;;
+      "sudo pacman") local name_installWith="PACMAN" ;;
+    esac
+    echo -e "[${name_installWith}] installing ${package}"
+
     if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
       echo -e "[WARNING] Failed to install ${package}, please check your internet connection"
       exit
@@ -66,7 +70,6 @@ operation_with() {
 
     echo -e "[DONE] ${package} is installed"
   done
-  unalias pacman
 }
 
 PackagesFont() {
@@ -84,10 +87,13 @@ PackagesFont() {
 
 PackagesEssential() {
   local list_pacman=(
+    "base-devel"
     "brightnessctl"
+    "cmake"
     "fzf"
     "lazygit"
     "man"
+    "make"
     "npm"
     "pacman-contrib"
     "ranger"
@@ -100,12 +106,7 @@ PackagesEssential() {
     "wget"
   )
 
-  local list_yay=(
-    "zen-browser-bin"
-  )
-
   operation_with -p "${list_pacman[@]}"
-  operation_with -y "${list_yay[@]}"
 
   local DIR="$HOME/.config/nvim/"
   if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
@@ -115,8 +116,8 @@ PackagesEssential() {
 
 PackagesAudio() {
   local list_pipewire=(
-    "pavucontrol"
     "pipewire"
+    "pipewire-alsa"
     "pipewire-pulse"
     "wireplumber"
   )
@@ -138,12 +139,14 @@ PackagesAudio() {
   esac
 
   operation_with -p "${selected_list[@]}"
+  case $selected_list in
+    "list_pipewire") operation_with -y "pwvucontrol" ;;
+  esac
 }
 
 PackagesDesktop() {
-  local list_hyprland=(
+  local list_pacman=(
     "grim"
-    "hyprland"
     "kwindowsystem"
     "libnotify"
     "slurp"
@@ -153,27 +156,12 @@ PackagesDesktop() {
     "waybar"
     "wl-clipboard"
     "wofi"
-    "xdg-desktop-portal-hyprland"
-  )
-
-  local list_sway=(
-    "grim"
-    "kwindowsystem"
-    "libnotify"
-    "slurp"
-    "swappy"
-    "sway"
-    "swaybg"
-    "swaync"
-    "waybar"
-    "wl-clipboard"
-    "wofi"
-    "xdg-desktop-portal-wlr"
   )
 
   local list_yay=(
     "python-pywal16"
     "wl-color-picker"
+    "zen-browser-bin"
   )
 
   # use declare -n, selected_list is pointed variable out of PackagesDesktop scope
@@ -181,11 +169,14 @@ PackagesDesktop() {
   declare -n selected_list
 
   case $desktop_flag in
-    "-h") selected_list="list_hyprland" ;;
-    "-s") selected_list="list_sway" ;;
+    "-h")
+      list_pacman+=("hyprland" "xdg-desktop-portal-hyprland") ;;
+    "-s")
+      list_pacman+=("xdg-desktop-portal-wlr" "xorg-xwayland")
+      list_yay+=("swayfx") ;;
   esac
 
-  operation_with -p "${selected_list[@]}"
+  operation_with -p "${list_pacman[@]}"
   operation_with -y "${list_yay[@]}"
 }
 
