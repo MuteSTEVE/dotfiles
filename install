@@ -27,14 +27,14 @@ clone_git() {
 operation_with() {
   # Check if yay is installed first
   if ! command -v yay &>/dev/null; then
-    local DIR="/tmp/yay"
-    clone_git https://aur.archlinux.org/yay.git "${DIR}"
+    local tmp_DIR="/tmp/yay"
+    clone_git https://aur.archlinux.org/yay.git "${tmp_DIR}"
     echo -e "[YAY] Yay is not installed, installing Yay"
 
     # subshell won't affect the current shell behaviour such as $PWD location
-    ( cd "$DIR" || exit
+    ( cd "$tmp_DIR" || exit
       makepkg -si &>/dev/null
-    ) && rm -rf "$DIR"
+    ) && rm -rf "$tmp_DIR"
   fi
 
   local flag="$1"
@@ -108,9 +108,9 @@ PackagesEssential() {
 
   operation_with -p "${list_pacman[@]}"
 
-  local DIR="$HOME/.config/nvim/"
-  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
-    clone_git https://github.com/MuteSTEVE/nvim.git "${DIR}"
+  local nvim_DIR="$HOME/.config/nvim/"
+  if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
+    clone_git https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}"
   fi
 }
 
@@ -208,10 +208,10 @@ PackagesJapanese() {
   operation_with -p "${list_pacman[@]}"
   operation_with -y "${list_yay[@]}"
 
-  local DIR=$HOME/.config/mpv/scripts/
-  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
-    mkdir -p "$DIR"
-    clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${DIR}/subs2srs"
+  local mpv_DIR=$HOME/.config/mpv/scripts/
+  if [[ ! -d "$mpv_DIR" ]] || [[ -z "$(ls -A "$mpv_DIR")" ]]; then
+    mkdir -p "$mpv_DIR"
+    clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${mpv_DIR}/subs2srs"
   fi
 }
 
@@ -229,8 +229,8 @@ ConfigDirectories() {
   local omb_DIR="$HOME/.oh-my-bash/"
   if [[ ! -d "$omb_DIR" ]] || [[ -z "$(ls -A "$omb_DIR")" ]]; then
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    sed -i 's/\$(clock_prompt)/ /g' "$DIR/themes/font/font.theme.sh"
-    sed -i 's/\$(hostname)//g' "$DIR/themes/font/font.theme.sh"
+    sed -i 's/\$(clock_prompt)/ /g' "$omb_DIR/themes/font/font.theme.sh"
+    sed -i 's/\$(hostname)//g' "$omb_DIR/themes/font/font.theme.sh"
   fi
 
   for copy in "${list[@]}"; do
@@ -257,11 +257,11 @@ DownloadWallpapers() {
     "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # mutsuki_(blue_archive)
   )
 
-  local DIR=$HOME/.local/wallpapers/
-  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
-    mkdir -p "$DIR"
+  local wallpaper_DIR=$HOME/Pictures/wallpapers/
+  if [[ ! -d "$wallpaper_DIR" ]] || [[ -z "$(ls -A "$wallpaper_DIR")" ]]; then
+    mkdir -p "$wallpaper_DIR"
     for img in "${WALLS[@]}"; do
-      curl -O --output-dir "$DIR" "${img}" &>/dev/null
+      curl -O --output-dir "$wallpaper_DIR" "${img}" &>/dev/null
       echo -e "[WP] Downloading wallpaper $(basename ${img})"
     done
   fi
