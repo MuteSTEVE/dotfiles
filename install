@@ -99,6 +99,7 @@ PackagesEssential() {
     "ranger"
     "ripgrep"
     "thunar"
+    "tumbler"
     "tmux"
     "udiskie"
     "udisks2"
