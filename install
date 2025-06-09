@@ -6,7 +6,7 @@ ArchDistro() {
   local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
 
   if [[ ! ${family[@]} =~ $distro ]]; then
-    echo "Sorry, Arch Linux only"
+    echo -e "Sorry, Arch or Arch-based only"
     exit
   fi
 }
@@ -18,7 +18,7 @@ clone_git() {
   local name=$(basename "$url" | cut -d '.' -f1)
 
   if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
-    echo "Failed to clone $name, please check your internet connection" 
+    echo -e "[WARNING] Failed to clone $name, please check your internet connection" 
     exit
   fi
 }
@@ -29,38 +29,44 @@ operation_with() {
   if ! command -v yay &>/dev/null; then
     local DIR="/tmp/yay"
     clone_git https://aur.archlinux.org/yay.git "${DIR}"
+    echo -e "[YAY] Yay is not installed, installing Yay"
 
-    pushd "${DIR}"
-    makepkg -si
-    popd
-    rm -rf "${DIR}"
+    # subshell won't affect the current shell behaviour such as $PWD location
+    ( cd "$DIR" || exit
+      makepkg -si &>/dev/null
+    ) && rm -rf "$DIR"
   fi
 
   local flag="$1"
   shift
   local list=("$@")
+  alias pacman="sudo pacman"
 
   case $flag in
     "-y") local installWith="yay" ;;
-    "-p") local installWith="sudo pacman" ;;
+    "-p") local installWith="pacman" ;;
   esac
 
   for package in "${list[@]}"; do
     if ! $installWith -Ss "${package}" &>/dev/null; then
-      echo "[TYPO] ${package} coulnd't be found, maybe there's typo?"
+      echo -e "[TYPO] ${package} coulnd't be found, maybe there's typo?"
       continue
     fi
 
     if $installWith -Q "${package}" &>/dev/null; then
-      echo "[SKIP] ${package} is already installed, skipping"
+      echo -e "[SKIP] ${package} is already installed, skipping"
       continue
     fi
 
+    echo -e "[${installWith}] installing ${package}"
     if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
-      echo "[FAILED] Failed to install ${package}, please check your internet connection"
+      echo -e "[WARNING] Failed to install ${package}, please check your internet connection"
       exit
     fi
+
+    echo -e "[DONE] ${package} is installed"
   done
+  unalias pacman
 }
 
 PackagesFont() {
@@ -74,6 +80,37 @@ PackagesFont() {
   )
 
   operation_with -y "${list_yay[@]}"
+}
+
+PackagesEssential() {
+  local list_pacman=(
+    "brightnessctl"
+    "fzf"
+    "lazygit"
+    "man"
+    "npm"
+    "pacman-contrib"
+    "ranger"
+    "ripgrep"
+    "thunar"
+    "tmux"
+    "udiskie"
+    "udisks2"
+    "unzip"
+    "wget"
+  )
+
+  local list_yay=(
+    "zen-browser-bin"
+  )
+
+  operation_with -p "${list_pacman[@]}"
+  operation_with -y "${list_yay[@]}"
+
+  local DIR="$HOME/.config/nvim/"
+  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
+    clone_git https://github.com/MuteSTEVE/nvim.git "${DIR}"
+  fi
 }
 
 PackagesAudio() {
@@ -103,43 +140,11 @@ PackagesAudio() {
   operation_with -p "${selected_list[@]}"
 }
 
-PackagesEssential() {
-  local list_pacman=(
-    "brightnessctl"
-    "fzf"
-    "lazygit"
-    "man"
-    "npm"
-    "pacman-contrib"
-    "ripgrep"
-    "thunar"
-    "tmux"
-    "udiskie"
-    "udisks2"
-    "unzip"
-    "wget"
-  )
-
-  local list_yay=(
-    "zen-browser-bin"
-  )
-
-  operation_with -p "${list_pacman[@]}"
-  operation_with -y "${list_yay[@]}"
-
-  local DIR="$HOME/.config/nvim/"
-  if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
-    clone_git https://github.com/MuteSTEVE/nvim.git "${DIR}"
-  fi
-}
-
-PackagesHyprland() {
-  local list_pacman=(
-    "fcitx5"
-    "fcitx5-configtool"
-    "fcitx5-mozc"
+PackagesDesktop() {
+  local list_hyprland=(
     "grim"
     "hyprland"
+    "kwindowsystem"
     "libnotify"
     "slurp"
     "swappy"
@@ -148,20 +153,47 @@ PackagesHyprland() {
     "waybar"
     "wl-clipboard"
     "wofi"
-    "xdg-desktop-portal"
+    "xdg-desktop-portal-hyprland"
+  )
+
+  local list_sway=(
+    "grim"
+    "kwindowsystem"
+    "libnotify"
+    "slurp"
+    "swappy"
+    "sway"
+    "swaybg"
+    "swaync"
+    "waybar"
+    "wl-clipboard"
+    "wofi"
+    "xdg-desktop-portal-wlr"
   )
 
   local list_yay=(
-    "kwindowsystem"
     "python-pywal16"
     "wl-color-picker"
   )
 
-  operation_with -p "${list_pacman[@]}"
+  # use declare -n, selected_list is pointed variable out of PackagesDesktop scope
+  local desktop_flag="$1"
+  declare -n selected_list
+
+  case $desktop_flag in
+    "-h") selected_list="list_hyprland" ;;
+    "-s") selected_list="list_sway" ;;
+  esac
+
+  operation_with -p "${selected_list[@]}"
+  operation_with -y "${list_yay[@]}"
 }
 
 PackagesJapanese() {
   local list_pacman=(
+    "fcitx5"
+    "fcitx5-configtool"
+    "fcitx5-mozc"
     "ffmpeg"
     "mpv"
     "ocrfeeder"
@@ -184,13 +216,6 @@ PackagesJapanese() {
 
   operation_with -p "${list_pacman[@]}"
   operation_with -y "${list_yay[@]}"
-
-  # If PackagesHyprland is not installed, which contains fcitx5 packages
-  if ! pacman -Q | grep ^fcitx5 &>/dev/null; then
-    operation_with -p "fcitx"
-    operation_with -p "fcitx-configtool"
-    operation_with -p "fcitx-mozc"
-  fi
 
   local DIR=$HOME/.config/mpv/scripts/
   if [[ ! -d "$DIR" ]] || [[ -z "$(ls -A "$DIR")" ]]; then
@@ -246,7 +271,7 @@ DownloadWallpapers() {
     mkdir -p "$DIR"
     for img in "${WALLS[@]}"; do
       curl -O --output-dir "$DIR" "${img}" &>/dev/null
-      echo "[WP] Downloading wallpaper $(basename ${img}...)"
+      echo -e "[WP] Downloading wallpaper $(basename ${img})"
     done
   fi
 }
@@ -257,9 +282,9 @@ main() {
   DownloadWallpapers
 
   PackagesFont
-  PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
+  PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
   PackagesEssential
-  PackagesHyprland
+  PackagesDesktop -s   # -h = hyprland; -s = sway;
   PackagesJapanese
 }
 main
