@@ -18,7 +18,7 @@ clone_git() {
   local name=$(basename "$url" | cut -d '.' -f1)
 
   if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
-    echo -e "[WARNING] Failed to clone $name, please check your internet connection" 
+    echo -e "[WARNING] Please check your internet connection"
     exit
   fi
 }
@@ -47,13 +47,14 @@ operation_with() {
   esac
 
   for package in "${list[@]}"; do
+    printf "%-10s %-20s\n" "[CHECKING]" "${package}"
     if ! $installWith -Ss "${package}" &>/dev/null; then
-      echo -e "[TYPO] ${package} coulnd't be found, maybe there's typo?"
+      printf "%-10s %-20s not found\n" "[WARNING]" "${package}"
       continue
     fi
 
     if $installWith -Q "${package}" &>/dev/null; then
-      echo -e "[SKIP] ${package} is already installed, skipping"
+      printf "%-10s %-20s already installed\n" "[SKIP]" "${package}"
       continue
     fi
 
@@ -61,14 +62,14 @@ operation_with() {
       "yay") local name_installWith="YAY" ;;
       "sudo pacman") local name_installWith="PACMAN" ;;
     esac
-    echo -e "[${name_installWith}] installing ${package}"
+    printf "%-10s %-20s installing\n" "[$name_installWith]" "${package}"
 
     if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
-      echo -e "[WARNING] Failed to install ${package}, please check your internet connection"
+      printf "%-10s %-20s check your internet connection\n" "[WARNING]" "${package}"
       exit
     fi
 
-    echo -e "[DONE] ${package} is installed"
+    printf "%-10s %-20s has been installed\n" "[DONE]" "${package}"
   done
 }
 
@@ -145,18 +146,19 @@ PackagesAudio() {
   esac
 }
 
-PackagesDesktop() {
+PackagesWayland() {
   local list_pacman=(
     "grim"
+    "kitty"
     "kwindowsystem"
     "libnotify"
     "slurp"
     "swappy"
-    "swaybg"
     "swaync"
     "waybar"
     "wl-clipboard"
     "wofi"
+    "xorg-xwayland"
   )
 
   local list_yay=(
@@ -165,15 +167,12 @@ PackagesDesktop() {
     "zen-browser-bin"
   )
 
-  # use declare -n, selected_list is pointed variable out of PackagesDesktop scope
   local desktop_flag="$1"
-  declare -n selected_list
-
   case $desktop_flag in
     "-h")
-      list_pacman+=("hyprland" "xdg-desktop-portal-hyprland") ;;
+      list_pacman+=("hyprland" "hyprpaper" "xdg-desktop-portal-hyprland") ;;
     "-s")
-      list_pacman+=("xdg-desktop-portal-wlr" "xorg-xwayland")
+      list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
       list_yay+=("swayfx") ;;
   esac
 
@@ -221,18 +220,20 @@ ConfigDirectories() {
   local dotfiles_DIR=$(find $HOME -type d -name dotfiles)
   local list=(
     ".bashrc"
+    ".bash_profile"
     ".gitconfig"
+    ".inputrc"
     ".config/"
     ".local/"
   )
 
   # Use ohmybash and change it's theme called "font" with slightly modified ps1 prompt
   local omb_DIR="$HOME/.oh-my-bash/"
-  if [[ ! -d "$omb_DIR" ]] || [[ -z "$(ls -A "$omb_DIR")" ]]; then
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    sed -i 's/\$(clock_prompt)/ /g' "$omb_DIR/themes/font/font.theme.sh"
-    sed -i 's/\$(hostname)//g' "$omb_DIR/themes/font/font.theme.sh"
-  fi
+  ( if [[ ! -d "$omb_DIR" ]] || [[ -z "$(ls -A "$omb_DIR")" ]] || exit; then
+      bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+    fi
+  ) && sed -i "s|$(clock_prompt)| |" "$omb_DIR/themes/font/font.theme.sh" \
+    && sed -i "s|$(hostname)||" "$omb_DIR/themes/font/font.theme.sh"
 
   for copy in "${list[@]}"; do
     cp -rn "$dotfiles_DIR/${copy}" $HOME/
@@ -276,7 +277,7 @@ main() {
   PackagesFont
   PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
   PackagesEssential
-  PackagesDesktop -s   # -h = hyprland; -s = sway;
+  PackagesWayland -h   # -h = hyprland; -s = sway;
   PackagesJapanese
 }
 main
