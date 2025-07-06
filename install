@@ -224,7 +224,7 @@ ConfigDirectories() {
   local dotfiles_DIR=$(find $HOME -type d -name dotfiles)
   local list=(
     ".bashrc"
-    ".bash_profile"
+    ".profile"
     ".gitconfig"
     ".inputrc"
     ".config/"
