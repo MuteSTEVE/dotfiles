@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Custom functions
+nvo() {
+  local var=$(find $HOME -type f | fzf | tr -d '\n')
+  if [[ -z $var ]]; then
+    echo "No file opened"
+  else
+    nvim "$var"
+  fi
+}
+
+fcd() {
+  local var=$(find $HOME -type d | fzf)
+  if [[ -z $var ]]; then
+    echo "No directory selected"
+  else
+    cd "$var"
+    echo $PWD
+  fi
+}

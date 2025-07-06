@@ -1,0 +1,15 @@
+#!/bin/sh
+
+frame=("零" "一" "二" "三" "四" "五" "六" "七" "八" "九" "十")
+
+spin(){
+  while :; do
+    for i in "${frame[@]}"
+    do
+      echo -ne "\r$i"
+      sleep 1
+    done
+  done
+}
+
+spin
