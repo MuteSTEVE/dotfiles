@@ -28,7 +28,7 @@ operation_with() {
   # Check if yay is installed first
   if ! command -v yay &>/dev/null; then
     local tmp_DIR="/tmp/yay"
-    clone_git https://aur.archlinux.org/yay.git "${tmp_DIR}"
+    clone_git https://aur.archlinux.org/yay-bin.git "${tmp_DIR}"
     echo -e "[YAY] Yay is not installed, installing Yay"
 
     # subshell won't affect the current shell behaviour such as $PWD location
@@ -88,6 +88,7 @@ PackagesFont() {
 
 PackagesEssential() {
   local list_pacman=(
+    "base"
     "base-devel"
     "brightnessctl"
     "cmake"
@@ -99,8 +100,7 @@ PackagesEssential() {
     "pacman-contrib"
     "ranger"
     "ripgrep"
-    "thunar"
-    "tumbler"
+    "pcmanfm"
     "tmux"
     "udiskie"
     "udisks2"
@@ -146,7 +146,7 @@ PackagesAudio() {
   esac
 }
 
-PackagesWayland() {
+PackagesDesktop() {
   local list_pacman=(
     "grim"
     "kitty"
@@ -174,6 +174,8 @@ PackagesWayland() {
     "-s")
       list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
       list_yay+=("swayfx") ;;
+    *)
+      local list_pacman=("nitrogen" "sxhkd" "xclip" "xorg" "xorg-xinit")
   esac
 
   operation_with -p "${list_pacman[@]}"
@@ -185,6 +187,8 @@ PackagesJapanese() {
     "fcitx5"
     "fcitx5-configtool"
     "fcitx5-mozc"
+    "fcitx5-gtk"
+    "fcitx5-qt"
     "ffmpeg"
     "mpv"
     "ocrfeeder"
@@ -227,14 +231,6 @@ ConfigDirectories() {
     ".local/"
   )
 
-  # Use ohmybash and change it's theme called "font" with slightly modified ps1 prompt
-  local omb_DIR="$HOME/.oh-my-bash/"
-  ( if [[ ! -d "$omb_DIR" ]] || [[ -z "$(ls -A "$omb_DIR")" ]] || exit; then
-      bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-    fi
-  ) && sed -i "s|$(clock_prompt)| |" "$omb_DIR/themes/font/font.theme.sh" \
-    && sed -i "s|$(hostname)||" "$omb_DIR/themes/font/font.theme.sh"
-
   for copy in "${list[@]}"; do
     cp -rn "$dotfiles_DIR/${copy}" $HOME/
   done
@@ -273,11 +269,10 @@ main() {
   ArchDistro
   ConfigDirectories
   DownloadWallpapers
-
   PackagesFont
-  PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
+  PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
   PackagesEssential
-  PackagesWayland -h   # -h = hyprland; -s = sway;
+  PackagesDesktop -x   # -h = hyprland; -s = sway; -x = x11(dwm);
   PackagesJapanese
 }
 main
