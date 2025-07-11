@@ -2,21 +2,21 @@
   "layer": "top",
     "modules-left": [
       "custom/launcher",
-      "hyprland/workspaces",
+      "sway/workspaces",
       "custom/uptime",
       "memory",
       "custom/updates",
     ],
-    "modules-center": ["hyprland/window"],
+    "modules-center": ["sway/window"],
     "modules-right": [
-      "wireplumber",
+      "pulseaudio",
       "battery",
       "custom/weather",
       "clock",
       "tray",
     ],
 
-    "wireplumber": {
+    "pulseaudio": {
       "format": "{icon} {volume}%",
       "format-icons": ["", "", ""],
       "format-muted": "{icon}x",
@@ -24,7 +24,7 @@
       "on-click-right": "blueman-manager"
     },
 
-    "hyprland/workspaces": {
+    "sway/workspaces": {
       "all-outputs": true,
       "format": "{icon}",
       "on-click": "activate",
@@ -42,7 +42,7 @@
       }
     },
 
-    "hyprland/window": {
+    "sway/window": {
       "icon": true,
       "icon-size": 20,
     },
