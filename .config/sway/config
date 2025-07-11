@@ -1,5 +1,6 @@
 ### Variables
 # Logo key. Use Mod1 for Alt.
+include ~/.cache/wal/colors-sway
 set $mod Mod4
 set $alt Mod1
 
@@ -8,7 +9,7 @@ set $alt Mod1
 #  ██  ██  
 # ████████ 
 #  ██  ██  
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+#output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
 set $term kitty
 set $menu wofi
@@ -120,6 +121,7 @@ bindsym $alt+Print exec grim $HOME/Pictures/Screenshot/$(date +'%Y-%m-%d_%H-%M-%
 gaps inner 10
 gaps outer 5
 smart_borders on
+corner_radius 10
 
 default_border pixel 5
 default_floating_border pixel 1
@@ -130,4 +132,14 @@ default_floating_border pixel 1
 # ████████ 
 #  ██  ██  
 # Autostart
-exec --no-startup-id swaync & nm-applet & fcitx5 & udiskie & waybar 
+exec --no-startup-id swaync &
+exec --no-startup-id nm-applet &
+exec --no-startup-id fcitx5 &
+exec --no-startup-id udiskie &
+exec --no-startup-id waybar  &
+#output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+
+# Custom scripts
+bindsym $mod+Shift+w exec $HOME/.local/bin/hyprwp && notify-send "Wallpaper has been changed"
+client.focused #ffffff $color1 $foreground
+client.unfocused #000000 $background $background
