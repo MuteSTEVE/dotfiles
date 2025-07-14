@@ -131,7 +131,7 @@
             "format-icons": {
                 "notification": "󱅫",
                 "none": "",
-                "dnd-notification": " ",
+                "dnd-notification": "",
                 "dnd-none": "󰂛",
                 "inhibited-notification": " ",
                 "inhibited-none": "",
