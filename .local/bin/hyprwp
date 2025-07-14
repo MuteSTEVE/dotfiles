@@ -12,8 +12,10 @@ hyprctl hyprpaper reload ,"$WALLPAPER"
 
 # Extract the color with pywal16 and restart waybar style
 killall waybar
+killall swaync
 wal -i "$WALLPAPER" &>/dev/null
 waybar &
+swaync &
 
 # Update hyprpaper config file
 sed -i "s|^preload = .*|preload = $WALLPAPER|" "$HYPRPAPER_CONF"

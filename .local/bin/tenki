@@ -1,0 +1,41 @@
+#!/bin/bash
+
+weather_city="Jakarta"
+weather=$(curl -s "https://wttr.in/$weather_city?format=1" | tr -d '+')
+weather_nospace="${weather// /}"
+weather_temperature="${weather_nospace:1}"
+
+case "${weather_nospace::1}" in
+    "☀️")
+        description="Sunny"
+        weather_icon="晴" ;;
+    "🌤️")
+        description="Partly sunny"
+        weather_icon="晴曇" ;;
+    "⛅")
+        description="Sometimes cloudy"
+        weather_icon="晴曇" ;;
+    "🌥️")
+        description="Mostly cloudy"
+        weather_icon="曇晴" ;;
+    "☁️")
+        description="Cloudy"
+        weather_icon="曇" ;;
+    "🌨️")
+        description="Snowy"
+        weather_icon="雪" ;;
+    "🌩️")
+        description="Thunderstorm"
+        weather_icon="雷" ;;
+    "🌧️")
+        description="Rainy"
+        weather_icon="雨" ;;
+    "🌫")
+        description="Foggy"
+        weather_icon="霧" ;;
+    *)
+        description="Error?"
+        weather_icon="？" ;;
+esac
+
+echo "$weather_icon ${weather_temperature}"
