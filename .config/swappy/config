@@ -1,5 +1,5 @@
 [Default]
-save_dir=$HOME/Pictures/Swappy/
+save_dir=/home/USERNAME_HERE/Pictures/Swappy/
 save_filename_format=swappy-%Y-%m-%d_%H-%M-%S.png
 show_panel=false
 line_size=5
