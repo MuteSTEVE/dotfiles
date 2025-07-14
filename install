@@ -2,277 +2,291 @@
 
 # Exclusive to arch
 ArchDistro() {
-  local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
-  local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
+    local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
+    local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
 
-  if [[ ! ${family[@]} =~ $distro ]]; then
-    echo -e "Sorry, Arch or Arch-based only"
-    exit
-  fi
+    if [[ ! ${family[@]} =~ $distro ]]; then
+        echo -e "Sorry, Arch or Arch-based only"
+        exit
+    fi
 }
 
 # Failed clone error handling
 clone_git() {
-  local url="$1"
-  local clone_dir="$2"
-  local name=$(basename "$url" | cut -d '.' -f1)
+    local url="$1"
+    local clone_dir="$2"
+    local name=$(basename "$url" | cut -d '.' -f1)
 
-  if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
-    echo -e "[WARNING] Please check your internet connection"
-    exit
-  fi
+    if ! git clone "${url}" "${clone_dir}" &>/dev/null; then
+        echo -e "[WARNING] Please check your internet connection"
+        exit
+    fi
 }
 
 # Install with yay or pacman
 operation_with() {
-  # Check if yay is installed first
-  if ! command -v yay &>/dev/null; then
-    local tmp_DIR="/tmp/yay"
-    clone_git https://aur.archlinux.org/yay-bin.git "${tmp_DIR}"
-    echo -e "[YAY] Yay is not installed, installing Yay"
+    # Check if yay is installed first
+    if ! command -v yay &>/dev/null; then
+        local tmp_DIR="/tmp/yay"
+        clone_git https://aur.archlinux.org/yay-bin.git "${tmp_DIR}"
+        echo -e "[YAY] Yay is not installed, installing Yay"
 
-    # subshell won't affect the current shell behaviour such as $PWD location
-    ( cd "$tmp_DIR" || exit
-      makepkg -si &>/dev/null
-    ) && rm -rf "$tmp_DIR"
-  fi
-
-  local flag="$1"
-  shift
-  local list=("$@")
-
-  case $flag in
-    "-y") local installWith="yay" ;;
-    "-p") local installWith="sudo pacman" ;;
-  esac
-
-  for package in "${list[@]}"; do
-    printf "%-10s %-20s\n" "[CHECKING]" "${package}"
-    if ! $installWith -Ss "${package}" &>/dev/null; then
-      printf "%-10s %-20s not found\n" "[WARNING]" "${package}"
-      continue
+        # subshell won't affect the current shell behaviour such as $PWD location
+        ( cd "$tmp_DIR" || exit
+        makepkg -si &>/dev/null
+        ) && rm -rf "$tmp_DIR"
     fi
 
-    if $installWith -Q "${package}" &>/dev/null; then
-      printf "%-10s %-20s already installed\n" "[SKIP]" "${package}"
-      continue
-    fi
+    local flag="$1"
+    shift
+    local list=("$@")
 
-    case $installWith in
-      "yay") local name_installWith="YAY" ;;
-      "sudo pacman") local name_installWith="PACMAN" ;;
+    case $flag in
+        "-y") local installWith="yay" ;;
+        "-p") local installWith="sudo pacman" ;;
     esac
-    printf "%-10s %-20s installing\n" "[$name_installWith]" "${package}"
 
-    if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
-      printf "%-10s %-20s check your internet connection\n" "[WARNING]" "${package}"
-      exit
-    fi
+    for package in "${list[@]}"; do
+        printf "%-10s %-20s\n" "[CHECKING]" "${package}"
+        if ! $installWith -Ss "${package}" &>/dev/null; then
+            printf "%-10s %-20s not found\n" "[WARNING]" "${package}"
+            continue
+        fi
 
-    printf "%-10s %-20s has been installed\n" "[DONE]" "${package}"
-  done
+        if $installWith -Q "${package}" &>/dev/null; then
+            printf "%-10s %-20s already installed\n" "[SKIP]" "${package}"
+            continue
+        fi
+
+        case $installWith in
+            "yay") local name_installWith="YAY" ;;
+            "sudo pacman") local name_installWith="PACMAN" ;;
+        esac
+        printf "%-10s %-20s installing\n" "[$name_installWith]" "${package}"
+
+        if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
+            printf "%-10s %-20s check your internet connection\n" "[WARNING]" "${package}"
+            exit
+        fi
+
+        printf "%-10s %-20s has been installed\n" "[DONE]" "${package}"
+    done
 }
 
 PackagesFont() {
-  local list_yay=(
-    "noto-fonts-cjk" 
-    "noto-fonts-emoji" 
-    "ttf-font-awesome"
-    "ttf-hack-nerd"
-    "ttf-jetbrains-mono-nerd"
-    "ttf-liberation"
-  )
+    local list_yay=(
+        "noto-fonts-cjk" 
+        "noto-fonts-emoji" 
+        "ttf-font-awesome"
+        "ttf-hack-nerd"
+        "ttf-jetbrains-mono-nerd"
+        "ttf-liberation"
+    )
 
-  operation_with -y "${list_yay[@]}"
+    operation_with -y "${list_yay[@]}"
 }
 
 PackagesEssential() {
-  local list_pacman=(
-    "base"
-    "base-devel"
-    "brightnessctl"
-    "cmake"
-    "fzf"
-    "lazygit"
-    "man"
-    "make"
-    "npm"
-    "pacman-contrib"
-    "ranger"
-    "ripgrep"
-    "pcmanfm"
-    "tmux"
-    "udiskie"
-    "udisks2"
-    "unzip"
-    "wget"
-  )
+    local list_pacman=(
+        "base"
+        "base-devel"
+        "brightnessctl"
+        "cmake"
+        "fzf"
+        "lazygit"
+        "man"
+        "make"
+        "npm"
+        "pacman-contrib"
+        "ranger"
+        "ripgrep"
+        "pcmanfm"
+        "tmux"
+        "udiskie"
+        "udisks2"
+        "unzip"
+        "wget"
+    )
 
-  operation_with -p "${list_pacman[@]}"
+    operation_with -p "${list_pacman[@]}"
 
-  local nvim_DIR="$HOME/.config/nvim/"
-  if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
-    clone_git https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}"
-  fi
+    local nvim_DIR="$HOME/.config/nvim/"
+    if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
+        clone_git https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}"
+    fi
 }
 
 PackagesAudio() {
-  local list_pipewire=(
-    "pipewire"
-    "pipewire-alsa"
-    "pipewire-pulse"
-    "wireplumber"
-  )
+    local list_pipewire=(
+        "pipewire"
+        "pipewire-alsa"
+        "pipewire-pulse"
+        "wireplumber"
+    )
 
-  local list_pulseaudio=(
-    "pavucontrol"
-    "pulseaudio"
-    "pulseaudio-alsa"
-    "pulseaudio-bluetooth"
-  )
+    local list_pulseaudio=(
+        "pavucontrol"
+        "pulseaudio"
+        "pulseaudio-alsa"
+        "pulseaudio-bluetooth"
+    )
 
-  # use declare -n, selected_list is pointed variable out of PackagesAudio scope
-  local audio_flag="$1"
-  declare -n selected_list
+    # use declare -n, selected_list is pointed variable out of PackagesAudio scope
+    local audio_flag="$1"
+    declare -n selected_list
 
-  case $audio_flag in
-    "-pa") selected_list="list_pulseaudio" ;;
-    "-pw") selected_list="list_pipewire" ;;
-  esac
+    case $audio_flag in
+        "-pa") selected_list="list_pulseaudio" ;;
+        "-pw") selected_list="list_pipewire" ;;
+    esac
 
-  operation_with -p "${selected_list[@]}"
-  case $selected_list in
-    "list_pipewire") operation_with -y "pwvucontrol" ;;
-  esac
+    operation_with -p "${selected_list[@]}"
+    case $selected_list in
+        "list_pipewire") operation_with -y "pwvucontrol" ;;
+    esac
 }
 
 PackagesDesktop() {
-  local list_pacman=(
-    "grim"
-    "kitty"
-    "kwindowsystem"
-    "libnotify"
-    "slurp"
-    "swappy"
-    "swaync"
-    "waybar"
-    "wl-clipboard"
-    "wofi"
-    "xorg-xwayland"
-  )
+    local list_pacman=(
+        "grim"
+        "kitty"
+        "kwindowsystem"
+        "libnotify"
+        "slurp"
+        "swappy"
+        "swaync"
+        "waybar"
+        "wl-clipboard"
+        "wofi"
+        "xorg-xwayland"
+    )
 
-  local list_yay=(
-    "python-pywal16"
-    "wl-color-picker"
-    "zen-browser-bin"
-  )
+    local list_yay=(
+        "python-pywal16"
+        "wl-color-picker"
+        "zen-browser-bin"
+    )
 
-  local desktop_flag="$1"
-  case $desktop_flag in
-    "-h")
-      list_pacman+=("hyprland" "hyprpaper" "xdg-desktop-portal-hyprland") ;;
-    "-s")
-      list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
-      list_yay+=("swayfx") ;;
-    *)
-      local list_pacman=("nitrogen" "sxhkd" "xclip" "xorg" "xorg-xinit")
-  esac
+    local desktop_flag="$1"
+    case $desktop_flag in
+        "-h")
+            list_pacman+=("hyprland" "hyprpaper" "xdg-desktop-portal-hyprland") ;;
+        "-s")
+            list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
+            list_yay+=("swayfx") ;;
+        *)
+            local list_pacman=("nitrogen" "sxhkd" "xclip" "xorg" "xorg-xinit")
+    esac
 
-  operation_with -p "${list_pacman[@]}"
-  operation_with -y "${list_yay[@]}"
+    operation_with -p "${list_pacman[@]}"
+    operation_with -y "${list_yay[@]}"
 }
 
 PackagesJapanese() {
-  local list_pacman=(
-    "fcitx5"
-    "fcitx5-configtool"
-    "fcitx5-mozc"
-    "fcitx5-gtk"
-    "fcitx5-qt"
-    "ffmpeg"
-    "mpv"
-    "ocrfeeder"
-    "tesseract"
-    "tesseract-data-eng"
-    "tesseract-data-chi_sim"
-    "tesseract-data-chi_sim_vert"
-    "tesseract-data-chi_tra"
-    "tesseract-data-chi_tra_vert"
-    "tesseract-data-jpn"
-    "tesseract-data-jpn_vert"
-    "tesseract-data-kor"
-    "tesseract-data-kor_vert"
-  )
+    local list_pacman=(
+        "fcitx5"
+        "fcitx5-configtool"
+        "fcitx5-mozc"
+        "fcitx5-gtk"
+        "fcitx5-qt"
+        "ffmpeg"
+        "mpv"
+        "ocrfeeder"
+        "tesseract"
+        "tesseract-data-eng"
+        "tesseract-data-chi_sim"
+        "tesseract-data-chi_sim_vert"
+        "tesseract-data-chi_tra"
+        "tesseract-data-chi_tra_vert"
+        "tesseract-data-jpn"
+        "tesseract-data-jpn_vert"
+        "tesseract-data-kor"
+        "tesseract-data-kor_vert"
+    )
 
-  local list_yay=(
-    "anki-bin"
-    "textsnatcher-git"
-  )
+    local list_yay=(
+        "anki-bin"
+        "textsnatcher-git"
+    )
 
-  operation_with -p "${list_pacman[@]}"
-  operation_with -y "${list_yay[@]}"
+    operation_with -p "${list_pacman[@]}"
+    operation_with -y "${list_yay[@]}"
 
-  local mpv_DIR=$HOME/.config/mpv/scripts/
-  if [[ ! -d "$mpv_DIR" ]] || [[ -z "$(ls -A "$mpv_DIR")" ]]; then
-    mkdir -p "$mpv_DIR"
-    clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${mpv_DIR}/subs2srs"
-  fi
+    local mpv_DIR=$HOME/.config/mpv/scripts/
+    if [[ ! -d "$mpv_DIR" ]] || [[ -z "$(ls -A "$mpv_DIR")" ]]; then
+        mkdir -p "$mpv_DIR"
+        clone_git 'https://github.com/Ajatt-Tools/mpvacious.git' "${mpv_DIR}/subs2srs"
+    fi
 }
 
 # Copy config files to $HOME if they don't already exist
 ConfigDirectories() {
-  local dotfiles_DIR=$(find $HOME -type d -name dotfiles)
-  local list=(
-    ".bashrc"
-    ".profile"
-    ".gitconfig"
-    ".inputrc"
-    ".config/"
-    ".local/"
-  )
+    local dotfiles_DIR=$(find $HOME -type d -name dotfiles)
+    local list=(
+        ".bashrc"
+        ".profile"
+        ".gitconfig"
+        ".inputrc"
+        ".config/"
+        ".local/"
+    )
+    local username_template=(
+        "$HOME/.config/hypr/hyprland.conf"
+        "$HOME/.config/kitty/kitty.conf"
+        "$HOME/.config/swappy/config"
+        "$HOME/.config/swaync/style.css"
+        "$HOME/.config/waybar/style.css"
+        "$HOME/.config/wofi/style.css"
+    )
 
-  for copy in "${list[@]}"; do
-    cp -rn "$dotfiles_DIR/${copy}" $HOME/
-  done
-  chmod +x $HOME/.local/bin/*
+    fcitx5/ hypr/   kitty/  mpv/    swappy/ swaync/ tmux/   wal/    waybar/ wofi/
+
+    for copy in "${list[@]}"; do
+        cp -rn "$dotfiles_DIR/${copy}" $HOME/
+    done
+    chmod +x $HOME/.local/bin/*
+
+    for username in "${username_template}"; do
+        sed -i "s|USERNAME_HERE|$(whoami)|" "${username}"
+    done
 }
 
 ## Wallpaper from wallhaven.cc
 DownloadWallpapers() {
-  WALLS=(
-    # YTTA
-    "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # arisu_(blue_archive)
-    "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # arisu_(blue_archive)
-    "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # izuna_(blue_archive)
-    "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # izuna_(blue_archive)
-    "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # izuna_(blue_archive)
-    "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # koyuki_(blue_archive)
-    "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # momoi_(blue_archive)
-    "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # momoi_(blue_archive) midori_(blue_archive)
-    "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # momoi_(blue_archive) midori_(blue_archive)
-    "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # mutsuki_(blue_archive)
-    "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # mutsuki_(blue_archive)
-    "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # mutsuki_(blue_archive)
-  )
+    WALLS=(
+        # YTTA
+        "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # arisu_(blue_archive)
+        "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # arisu_(blue_archive)
+        "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # izuna_(blue_archive)
+        "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # izuna_(blue_archive)
+        "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # izuna_(blue_archive)
+        "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # koyuki_(blue_archive)
+        "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # momoi_(blue_archive)
+        "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # momoi_(blue_archive) midori_(blue_archive)
+        "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # momoi_(blue_archive) midori_(blue_archive)
+        "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # mutsuki_(blue_archive)
+        "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # mutsuki_(blue_archive)
+        "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # mutsuki_(blue_archive)
+    )
 
-  local wallpaper_DIR=$HOME/Pictures/wallpapers/
-  if [[ ! -d "$wallpaper_DIR" ]] || [[ -z "$(ls -A "$wallpaper_DIR")" ]]; then
-    mkdir -p "$wallpaper_DIR"
-    for img in "${WALLS[@]}"; do
-      curl -O --output-dir "$wallpaper_DIR" "${img}" &>/dev/null
-      echo -e "[WP] Downloading wallpaper $(basename ${img})"
-    done
-  fi
+    local wallpaper_DIR=$HOME/Pictures/wallpapers/
+    if [[ ! -d "$wallpaper_DIR" ]] || [[ -z "$(ls -A "$wallpaper_DIR")" ]]; then
+        mkdir -p "$wallpaper_DIR"
+        for img in "${WALLS[@]}"; do
+            curl -O --output-dir "$wallpaper_DIR" "${img}" &>/dev/null
+            echo -e "[WP] Downloading wallpaper $(basename ${img})"
+        done
+    fi
 }
 
 main() {
-  ArchDistro
-  ConfigDirectories
-  DownloadWallpapers
-  PackagesFont
-  PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
-  PackagesEssential
-  PackagesDesktop -x   # -h = hyprland; -s = sway; -x = x11(dwm);
-  PackagesJapanese
+    ArchDistro
+    ConfigDirectories
+    DownloadWallpapers
+    PackagesFont
+    PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
+    PackagesEssential
+    PackagesDesktop -x   # -h = hyprland; -s = sway; -x = x11(dwm);
+    PackagesJapanese
 }
 main
