@@ -1,0 +1,142 @@
+#!/bin/bash
+echo -e "\n----------- Commence Operation ----------------\n"
+
+# Status flag
+readonly ENABLE
+readonly DISABLE
+
+# Define the directories
+readonly CURRENT_DIR="$PWD"
+readonly FLEXIPATCH_DIR="$HOME/suckless-flexipatch"
+readonly OUTPUT_DIR="$FLEXIPATCH_DIR/output"
+
+readonly DWM_DIR="$FLEXIPATCH_DIR/dwm-flexipatch"
+readonly DMENU_DIR="$FLEXIPATCH_DIR/dmenu-flexipatch"
+readonly ST_DIR="$FLEXIPATCH_DIR/st-flexipatch"
+readonly FINALIZER_DIR="$FLEXIPATCH_DIR/flexipatch-finalizer"
+
+mkdir -p "$FLEXIPATCH_DIR" "$OUTPUT_DIR"
+
+# Clone from bakkeby flexi repos
+REPOS_URL=(
+  "https://github.com/bakkeby/dwm-flexipatch"
+  "https://github.com/bakkeby/st-flexipatch"
+  "https://github.com/bakkeby/dmenu-flexipatch"
+  "https://github.com/bakkeby/flexipatch-finalizer"
+)
+
+# Create the necessary directory
+for repo in "${REPOS_URL[@]}"; do
+  REPO_NAME=$(basename "$repo")
+  TARGET_DIR="$FLEXIPATCH_DIR/$REPO_NAME"
+
+  if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "Cloning $REPO_NAME..."
+    git clone "$repo" "$TARGET_DIR" 2>/dev/null
+  else
+    echo "$REPO_NAME already exist, skipping clone."
+  fi
+done
+
+PatchDWM() {
+  echo -e "\n------------ Patching out DWM -----------------\n"
+
+  local PATCHES=(
+    "ALWAYSCENTER_PATCH"
+    "ATTACHBELOW_PATCH"
+    "BAR_AWESOMEBAR_PATCH"
+    "BAR_FANCYBAR_PATCH"
+    "BAR_HEIGHT_PATCH"
+    "BAR_LTSYMBOL_PATCH"
+    "BAR_STATUS_PATCH"
+    "BAR_SYSTRAY_PATCH"
+    "BAR_TAGS_PATCH"
+    "MOVESTACK_PATCH"
+    "NO_TRANSPARENT_BORDERS_PATCH"
+    "PERTAG_PATCH"
+    "PERTAG_VANITYGAPS_PATCH"
+    "VANITYGAPS_MONOCLE_PATCH"
+    "VANITYGAPS_PATCH"
+  )
+  local EX_PATCHES=( "BAR_PADDING_VANITYGAPS_PATCH" )
+
+  for patch in "${PATCHES[@]}"; do
+    sed -i "s/$patch $DISABLE/$patch $ENABLE/g" "$DWM_DIR/patches.def.h"
+  done
+
+  for ex_patch in "${EX_PATCHES[@]}"; do
+    sed -i "s/$ex_patch $ENABLE/$ex_patch $DISABLE/g" "$DWM_DIR/patches.def.h"
+  done
+
+  pushd "$DWM_DIR" && sudo make clean install && popd
+}
+
+PatchST() {
+  echo -e "\n-------------- Patching out ST -----------------\n"
+
+  local PATCHES=(
+    "ALPHA_PATCH"
+    "BOLD_IS_NOT_BRIGHT_PATCH"
+    "SCROLLBACK_PATCH"
+    "SINGLE_DRAWABLE_BUFFER_PATCH"
+    "W3M_PATCH"
+    "WIDE_GLYPHS_PATCH"
+  )
+
+  for patch in "${PATCHES[@]}"; do
+    sed -i "s/$patch $DISABLE/$patch $ENABLE/g" "$ST_DIR/patches.def.h"
+  done
+
+  pushd "$ST_DIR" && sudo make clean install && popd
+}
+
+PatchDMENU() {
+  echo -e "\n-------------- Patching out DMENU -----------------\n"
+
+  pushd "$DMENU_DIR" && sudo make clean install && popd
+}
+PatchFinalizer() {
+  echo -e "\n--------------- Finalizer ----------------------\n"
+
+  local FINALIZER_SCRIPT="$FINALIZER_DIR/flexipatch-finalizer.sh"
+  local OUTPUT_DWM="$OUTPUT_DIR/dwm"
+  local OUTPUT_DMENU="$OUTPUT_DIR/DMENU"
+  local OUTPUT_ST="$OUTPUT_DIR/st"
+
+  chmod +x "$FINALIZER_SCRIPT"
+  "$FINALIZER_SCRIPT" -r -d "$DWM_DIR" -o "$OUTPUT_DWM"
+  "$FINALIZER_SCRIPT" -r -d "$DMENU_DIR" -o "$OUTPUT_DWM"
+  "$FINALIZER_SCRIPT" -r -d "$ST_DIR" -o "$OUTPUT_ST"
+
+  echo "Patched dwm at: $OUTPUT_DWM"
+  echo "Patched dmenu at: $OUTPUT_DMENU"
+  echo "Patched st at: $OUTPUT_ST"
+}
+
+main() {
+  PatchDWM
+  PatchDMENU
+  PatchST
+  PatchFinalizer
+}
+main
+
+echo -e "\n--------------- Operation
+ Please re-login from your current dwm session!
+               Successfull ---------------------
+
+ By: MuteSTEVE\n"
+
+### TODO: Future implementation
+#dwm_configs() {
+#  local configs=(
+#    "static const unsigned int gappih         = 10;"
+#    "static const unsigned int gappiv         = 10;"
+#    "static const unsigned int gappoh         = 10;"
+#    "static const unsigned int gappov         = 10;"
+#    "static const int bar_height              = 20;"
+#    "[DEFAULT_TAGS]        = { \"一\", \"二\", \"三\", \"四\", \"五\", \"六\", \"七\", \"八\", \"九\" };"
+#    "static const char *fonts[]              = { \"Hack Nerd Font:size=10:style=Regular\" };"
+#    "static const char dmenufont[]           = \"Hack Nerd Font:size=10:style=Regular\";"
+#  )
+#}
