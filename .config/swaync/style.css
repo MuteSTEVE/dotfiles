@@ -5,7 +5,7 @@
     font-family: "Adwaita Sans";
     font-size: 18px;
     text-shadow: none;
-    color: @foreground;
+    color: @background;
     background-color: transparent;
     background: transparent;
 }
@@ -89,6 +89,22 @@ scale trough {
 slider {
     background-color: @background;
 }
+scale trough slider {
+    background-color: @color1; /* inner color of the handle */
+    border: 3px solid @background; /* border around the handle */
+    border-radius: 100%;           /* make it round */
+    min-width: 18px;
+    min-height: 18px;
+}
+
+scale trough slider:hover {
+    background-color: @color3;
+}
+
+scale trough slider:active {
+    background-color: @color7;
+}
+
 tooltip {
     background-color: @background;
 }
@@ -101,6 +117,7 @@ tooltip {
 }
 .widget-volume > box > button {
     border: none;
+    background: @color1;
 }
 .per-app-volume {
     padding: 4px 8px 8px 8px;

@@ -47,14 +47,14 @@ operation_with() {
     esac
 
     for package in "${list[@]}"; do
-        printf "%-10s %-20s\n" "[CHECKING]" "${package}"
+        printf "%-10s %-30s\n" "[CHECKING]" "${package}"
         if ! $installWith -Ss "${package}" &>/dev/null; then
-            printf "%-10s %-20s not found\n" "[WARNING]" "${package}"
+            printf "%-10s %-30s not found\n" "[WARNING]" "${package}"
             continue
         fi
 
         if $installWith -Q "${package}" &>/dev/null; then
-            printf "%-10s %-20s already installed\n" "[SKIP]" "${package}"
+            printf "%-10s %-30s already installed\n" "[SKIP]" "${package}"
             continue
         fi
 
@@ -62,10 +62,10 @@ operation_with() {
             "yay") local name_installWith="YAY" ;;
             "sudo pacman") local name_installWith="PACMAN" ;;
         esac
-        printf "%-10s %-20s installing\n" "[$name_installWith]" "${package}"
+        printf "%-10s %-30s installing\n" "[$name_installWith]" "${package}"
 
         if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
-            printf "%-10s %-20s check your internet connection\n" "[WARNING]" "${package}"
+            printf "%-10s %-30s check your internet connection\n" "[WARNING]" "${package}"
             exit
         fi
 
@@ -242,7 +242,7 @@ ConfigDirectories() {
     fcitx5/ hypr/   kitty/  mpv/    swappy/ swaync/ tmux/   wal/    waybar/ wofi/
 
     for copy in "${list[@]}"; do
-        cp -rn "$dotfiles_DIR/${copy}" $HOME/
+        cp -r "$dotfiles_DIR/${copy}" $HOME/
     done
     chmod +x $HOME/.local/bin/*
 
@@ -261,6 +261,7 @@ DownloadWallpapers() {
         "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # izuna_(blue_archive)
         "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # izuna_(blue_archive)
         "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # koyuki_(blue_archive)
+        "https://w.wallhaven.cc/full/85/wallhaven-85ekpy.png" # michiru_(blue_archive)
         "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # momoi_(blue_archive)
         "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # momoi_(blue_archive) midori_(blue_archive)
         "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # momoi_(blue_archive) midori_(blue_archive)
@@ -284,9 +285,9 @@ main() {
     ConfigDirectories
     DownloadWallpapers
     PackagesFont
-    PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
+    PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
     PackagesEssential
-    PackagesDesktop -x   # -h = hyprland; -s = sway; -x = x11(dwm);
+    PackagesDesktop -h   # -h = hyprland; -s = sway; -x = x11(dwm);
     PackagesJapanese
 }
 main
