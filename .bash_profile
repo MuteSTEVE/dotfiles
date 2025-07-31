@@ -1,8 +1,4 @@
 [[ -f ~/.bashrc ]] && . ~/.bashrc
-export PATH="$PATH:$HOME/.local/bin/"
-
-export XDG_SESSION_TYPE=wayland 
-export GDK_BACKEND=wayland
 
 # Fcitx
 export GTK_IM_MODULE=wayland

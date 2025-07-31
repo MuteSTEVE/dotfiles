@@ -1,129 +1,149 @@
 {
-  "layer": "top",
-    "modules-left": [
-      "custom/launcher",
-      "sway/workspaces",
-      "custom/uptime",
-      "memory",
-      "custom/updates",
-    ],
-    "modules-center": ["sway/window"],
-    "modules-right": [
-      "pulseaudio",
-      "battery",
-      "custom/weather",
-      "clock",
-      "tray",
-    ],
+    "layer": "top",
+    "reload_style_on_change" : true,
+        "modules-left": [
+            "clock",
+            "hyprland/workspaces",
+            "custom/weather",
+        ],
+        "modules-center": ["hyprland/window"],
+        "modules-right": [
+            "custom/notification",
+            "pulseaudio",
+            "battery",
+            "tray",
+        ],
 
-    "pulseaudio": {
-      "format": "{icon} {volume}%",
-      "format-icons": ["", "", ""],
-      "format-muted": "{icon}x",
-      "on-click": "pwvucontrol",
-      "on-click-right": "blueman-manager"
-    },
+        "pulseaudio": {
+            "format": "{icon} {volume}%",
+            "format-icons": ["", "", ""],
+            "format-muted": "{icon}x",
+            "on-click": "pwvucontrol",
+            "on-click-right": "blueman-manager"
+        },
 
-    "sway/workspaces": {
-      "all-outputs": true,
-      "format": "{icon}",
-      "on-click": "activate",
-      "format-icons": {
-        "1": "一",
-        "2": "二",
-        "3": "三",
-        "4": "四",
-        "5": "五",
-        "6": "六",
-        "7": "七",
-        "8": "八",
-        "9": "九",
-        "10": "十",
-      }
-    },
+        "hyprland/workspaces": {
+            "all-outputs": true,
+            "format": "{icon}",
+            "on-click": "activate",
+            "format-icons": {
+                "1": "一",
+                "2": "二",
+                "3": "三",
+                "4": "四",
+                "5": "五",
+                "6": "六",
+                "7": "七",
+                "8": "八",
+                "9": "九",
+                "10": "十",
+            }
+        },
 
-    "sway/window": {
-      "icon": true,
-      "icon-size": 20,
-    },
+        "hyprland/window": {
+            "icon": true,
+            "icon-size": 20,
+        },
 
-    "battery": {
-      "bat": "BAT1",
-      "states": {
-        "good": 95,
-        "warning": 30,
-        "critical": 20
-      },
-      "format": "{icon} {capacity}%",
-      "format-charging": " {capacity}%",
-      "format-plugged": " {capacity}%", "format-alt": "{time} {icon}",
-      "format-icons": ["", "", "", "", ""]
-    },
+        "battery": {
+            "bat": "BAT1",
+            "states": {
+                "good": 95,
+                "warning": 30,
+                "critical": 20
+            },
+            "format": "{icon} {capacity}%",
+            "format-charging": " {capacity}%",
+            "format-plugged": " {capacity}%", "format-alt": "{time} {icon}",
+            "format-icons": ["", "", "", "", ""]
+        },
 
-    "tray":{
-      "icon-size":20,
-      "spacing": 5
-    },
+        "tray":{
+            "icon-size":20,
+            "spacing": 5
+        },
 
-    "clock": {
-      "format": " {:%I:%M}",
-      "format-alt": "{:%A, %B %d, %Y (%R)}",
-      "tooltip-format": "<tt><small>{calendar}</small></tt>",
-      "calendar": {
-        "mode"          : "year",
-        "mode-mon-col"  : 3,
-        "weeks-pos"     : "right",
-        "on-scroll"     : 1,
-        "format": {
-          "months":     "<span color='#ffead3'><b>{}</b></span>",
-          "days":       "<span color='#ecc6d9'><b>{}</b></span>",
-          "weeks":      "<span color='#99ffdd'><b>{}</b></span>",
-          "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
-          "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+        "clock": {
+            "format": "<b>{:%p %I:%M}</b>",
+            "format-alt": "{:%A, %B %d, %Y (%R)}",
+            "tooltip-format": "<tt><small>{calendar}</small></tt>",
+            "calendar": {
+                "mode"          : "year",
+                "mode-mon-col"  : 3,
+                "weeks-pos"     : "right",
+                "on-scroll"     : 1,
+                "format": {
+                    "months":     "<span color='#ffead3'><b>{}</b></span>",
+                    "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                    "weeks":      "<span color='#99ffdd'><b>{}</b></span>",
+                    "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+                    "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+                }
+            },
+            "actions":  {
+                "on-click-right": "mode",
+                "on-scroll-up": "tz_up",
+                "on-scroll-down": "tz_down",
+                "on-scroll-up": "shift_up",
+                "on-scroll-down": "shift_down"
+            }
+        },
+
+        "memory": {
+            "interval": 5,
+            "format": " {used}",
+        },
+
+        "custom/launcher":{
+            "format": " ",
+            "on-click": "wofi --show drun",
+            "on-click-right": "killall rofi"
+        },
+
+        "custom/power":{
+            "format": " ",
+            "on-click": "bash ~/.config/rofi/leave/leave.sh",
+        },
+
+        "custom/weather":{
+            "format": "{} ",
+            "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | tr -d + | xargs echo -n",
+            "tooltip-format": "Jakarta: {}",
+            "interval": 60,
+        },
+
+        "custom/uptime":{
+            "format": "󱦟 {}",
+            "exec": "sh $HOME/.local/bin/checkuptime",
+            "interval": 60,
+        },
+
+        "custom/updates":{
+            "format": " {}",
+            "exec": "checkupdates | wc -l",
+            "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
+            "interval": 60,
+        },
+
+
+        "custom/notification": {
+            "tooltip": false,
+            "format": " {icon}",
+            "format-icons": {
+                "notification": "󱅫 ",
+                "none": " ",
+                "dnd-notification": " ",
+                "dnd-none": "󰂛 ",
+                "inhibited-notification": " ",
+                "inhibited-none": " ",
+                "dnd-inhibited-notification": " ",
+                "dnd-inhibited-none": " "
+            },
+            "return-type": "json",
+            "exec-if": "which swaync-client",
+            "exec": "swaync-client -swb",
+            "on-click": "swaync-client -t -sw",
+            "on-click-right": "swaync-client -d -sw",
+            "escape": true
         }
-      },
-      "actions":  {
-        "on-click-right": "mode",
-        "on-scroll-up": "tz_up",
-        "on-scroll-down": "tz_down",
-        "on-scroll-up": "shift_up",
-        "on-scroll-down": "shift_down"
-      }
-    },
-
-    "memory": {
-      "interval": 5,
-      "format": " {used}",
-    },
-
-    "custom/launcher":{
-      "format": " ",
-      "on-click": "wofi --show drun",
-      "on-click-right": "killall rofi"
-    },
-
-    "custom/power":{
-      "format": " ",
-      "on-click": "bash ~/.config/rofi/leave/leave.sh",
-    },
-
-    "custom/weather":{
-      "format": "{} ",
-      "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | tr -d + | xargs echo -n",
-      "tooltip-format": "Jakarta: {}",
-      "interval": 60,
-    },
-
-    "custom/uptime":{
-      "format": "󱦟 {}",
-      "exec": "sh $HOME/.local/bin/checkuptime",
-      "interval": 60,
-    },
-
-    "custom/updates":{
-      "format": " {}",
-      "exec": "checkupdates | wc -l",
-      "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
-      "interval": 60,
-    },
 }
