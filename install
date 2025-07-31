@@ -136,13 +136,12 @@ PackagesAudio() {
 
     case $audio_flag in
         "-pa") selected_list="list_pulseaudio" ;;
-        "-pw") selected_list="list_pipewire" ;;
+        "-pw")
+            selected_list="list_pipewire"
+            operation_with -y "pwvucontrol" ;;
     esac
 
     operation_with -p "${selected_list[@]}"
-    case $selected_list in
-        "list_pipewire") operation_with -y "pwvucontrol" ;;
-    esac
 }
 
 PackagesDesktop() {
@@ -156,13 +155,12 @@ PackagesDesktop() {
         "waybar"
         "wl-clipboard"
         "wofi"
-        "xorg-xwayland"
     )
 
     local list_yay=(
         "python-pywal16"
         "wl-color-picker"
-        "zen-browser-bin"
+        "brave-bin"
     )
 
     local desktop_flag="$1"
@@ -191,9 +189,7 @@ PackagesJapanese() {
         "mpv"
     )
 
-    local list_yay=(
-        "anki-bin"
-    )
+    local list_yay=( "anki-bin")
 
     operation_with -p "${list_pacman[@]}"
     operation_with -y "${list_yay[@]}"
@@ -217,7 +213,6 @@ ConfigDirectories() {
         ".local/"
     )
     local username_template=(
-        "$HOME/.config/hypr/hyprland.conf"
         "$HOME/.config/kitty/kitty.conf"
         "$HOME/.config/swappy/config"
         "$HOME/.config/swaync/style.css"
@@ -269,9 +264,9 @@ main() {
     ConfigDirectories
     DownloadWallpapers
     PackagesFont
-    PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
+    PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
     PackagesEssential
-    PackagesDesktop -h   # -h = hyprland; -s = sway; -x = x11(dwm);
+    PackagesDesktop -s   # -h = hyprland; -s = sway; -x = x11(dwm);
     PackagesJapanese
 }
 main
