@@ -1,0 +1,181 @@
+@import '/home/USERNAME_HERE/.cache/wal/colors-waybar.css';
+
+* {
+    outline: none;
+    font-family: "Adwaita Sans";
+    font-size: 18px;
+    text-shadow: none;
+    color: @foreground;
+    background-color: transparent;
+    background: transparent;
+}
+
+.control-center {
+    background-color: @background;
+    padding: 5px;
+}
+
+.control-center .notification-row .notification-background {
+    border-radius: 15px;
+    margin-top: 5px;
+}
+
+.notification {
+    background-color: @background;
+}
+
+.notification > *:last-child > *  {
+    margin: 5px;
+}
+
+.summary { font-size: 1.1rem; }
+.time { font-size: 0.8rem; }
+.body { font-size: 1rem; }
+
+.notification-content {
+    padding: 15px 10px 10px 20px;
+}
+
+.notification-action > button {
+    padding: unset;
+    margin: unset;
+}
+.notification-action > label {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.notification.critical {
+    background-color: #e64553;
+}
+.notification.low,
+.notification.normal  {
+    background-color: @background;
+}
+
+.close-button {
+    background-color: @color3;
+}
+.close-button:hover {
+    background-color: @color7;
+}
+
+.notification-group-header,
+.notification-group-icon {
+    font-size: 0.9rem;
+}
+
+.notification-group-collapse-button,
+.notification-group-close-all-button {
+    background-color: @cursor;
+}
+
+.notification-group-collapse-button:hover {
+    background-color: @color1;
+}
+.notification-group-close-all-button:hover {
+    background-color: @color3;
+}
+
+trough highlight {
+    background: @color1;
+}
+scale trough {
+    margin: 0rem 1rem;
+    background-color: @background;
+    min-height: 8px;
+    min-width: 70px;
+}
+slider {
+    background-color: @background;
+}
+scale trough slider {
+    background-color: @color1; /* inner color of the handle */
+    border: 3px solid @background; /* border around the handle */
+    border-radius: 100%;           /* make it round */
+    min-width: 18px;
+    min-height: 18px;
+}
+
+scale trough slider:hover {
+    background-color: @color3;
+}
+
+scale trough slider:active {
+    background-color: @color1;
+}
+
+tooltip {
+    background-color: @background;
+}
+
+/* Volume widget */
+.widget-volume {
+    padding: 6px 5px 5px 5px;
+    margin: unset;
+    font-size: 1.3rem;
+}
+.widget-volume > box > button {
+    border: none;
+    background: @color1;
+}
+.per-app-volume {
+    padding: 4px 8px 8px 8px;
+    margin: 0px 8px 8px 8px;
+}
+
+/* Backlight widget */
+.widget-backlight {
+    padding: 0 0 3px 16px;
+    margin: unset;
+    font-size: 1.1rem;
+}
+
+/* DND widget */
+.widget-dnd {
+    font-weight: bold;
+    margin: unset;
+    padding: 20px 15px 15px 15px;
+}
+.widget-dnd > switch {
+    font-size: initial;
+    border-radius: 100px;
+    background: @foreground;
+    border: none;
+    box-shadow: none;
+    padding: 3px;
+}
+.widget-dnd > switch:checked {
+    background: @color1;
+}
+.widget-dnd > switch slider {
+    background: @background;
+    border-radius: 12px;
+    min-width: 18px;
+    min-height: 18px;
+}
+
+/* Title widget */
+.widget-title {
+    padding: unset;
+    margin: unset;
+    font-weight: bold;
+    padding: 15px;
+}
+.widget-title > label {
+    font-size: 1.5rem;
+}
+.widget-title > button {
+    padding:unset;
+    margin:unset;
+    text-shadow: none;
+    background: #e64553;
+    border: none;
+    box-shadow: none;
+    border-radius: 100px;
+    padding:0px 6px;
+    transition: all .7s ease;
+}
+.widget-title > button:hover {
+    background: @color3;
+}
