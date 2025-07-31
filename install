@@ -98,14 +98,13 @@ PackagesEssential() {
         "make"
         "npm"
         "pacman-contrib"
-        "ranger"
         "ripgrep"
-        "pcmanfm"
         "tmux"
         "udiskie"
         "udisks2"
         "unzip"
         "wget"
+        "yazi"
     )
 
     operation_with -p "${list_pacman[@]}"
@@ -150,7 +149,6 @@ PackagesDesktop() {
     local list_pacman=(
         "grim"
         "kitty"
-        "kwindowsystem"
         "libnotify"
         "slurp"
         "swappy"
@@ -191,22 +189,10 @@ PackagesJapanese() {
         "fcitx5-qt"
         "ffmpeg"
         "mpv"
-        "ocrfeeder"
-        "tesseract"
-        "tesseract-data-eng"
-        "tesseract-data-chi_sim"
-        "tesseract-data-chi_sim_vert"
-        "tesseract-data-chi_tra"
-        "tesseract-data-chi_tra_vert"
-        "tesseract-data-jpn"
-        "tesseract-data-jpn_vert"
-        "tesseract-data-kor"
-        "tesseract-data-kor_vert"
     )
 
     local list_yay=(
         "anki-bin"
-        "textsnatcher-git"
     )
 
     operation_with -p "${list_pacman[@]}"
@@ -239,15 +225,13 @@ ConfigDirectories() {
         "$HOME/.config/wofi/style.css"
     )
 
-    fcitx5/ hypr/   kitty/  mpv/    swappy/ swaync/ tmux/   wal/    waybar/ wofi/
-
     for copy in "${list[@]}"; do
         cp -r "$dotfiles_DIR/${copy}" $HOME/
     done
     chmod +x $HOME/.local/bin/*
 
-    for username in "${username_template}"; do
-        sed -i "s|USERNAME_HERE|$(whoami)|" "${username}"
+    for username in "${username_template[@]}"; do
+	sed -i "s|USERNAME_HERE|$USER|" "$username"
     done
 }
 
@@ -285,7 +269,7 @@ main() {
     ConfigDirectories
     DownloadWallpapers
     PackagesFont
-    PackagesAudio -pw    # -pa = pulseaudio; -pw = pipewire;
+    PackagesAudio -pa    # -pa = pulseaudio; -pw = pipewire;
     PackagesEssential
     PackagesDesktop -h   # -h = hyprland; -s = sway; -x = x11(dwm);
     PackagesJapanese

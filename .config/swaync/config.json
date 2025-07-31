@@ -1,5 +1,4 @@
 {
-    "$schema": "/etc/xdg/swaync/configSchema.json",
     "positionX": "right",
     "positionY": "top",
     "cssPriority": "user",
@@ -28,17 +27,6 @@
     "keyboard-shortcuts": true,
     "image-visibility": "when-available",
     "transition-time": 200,
-    "hide-on-clear": false,
-    "hide-on-action": true,
-    "text-empty": "No Notifications",
-    "script-fail-notify": true,
-    "notification-visibility": {
-        "example-name": {
-            "state": "muted",
-            "urgency": "Low",
-            "app-name": "Spotify"
-        }
-    },
     "widgets": [
         "dnd",
         "mpris",
@@ -53,7 +41,7 @@
             "image-radius": 0
         },
         "volume": {
-            "label": " 󰕾 ",
+            "label": "   音 ",
             "expand-button-label": " ",
             "collapse-button-label": " ",
             "show-per-app": true,
@@ -61,16 +49,15 @@
             "show-per-app-label": false
         },
         "backlight": {
-            "label": "󰃟 "
+            "label": "明 "
         },
         "dnd": {
-            "text": "Do Not Disturb"
+            "text": "通知をオフにする"
         },
         "title": {
-            "text": "Notifications Center",
+            "text": "通知センター",
             "clear-all-button": true,
             "button-text": " 󰆴 "
-        },
-        "buttons-grid": {}
+        }
     }
 }

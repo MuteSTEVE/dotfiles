@@ -2,88 +2,59 @@
 @define-color arch #59DCEB;
 
 * {
-  border-radius: 10px;
-  font-family: "JetbrainsMono Nerd Font";
-  font-size: 15px;
-  color: @cursor;
+    border-radius: 10px;
+    font-family: "JetbrainsMono Nerd Font";
+    font-size: 15px;
+    color: @cursor;
 }
 window#waybar {
-  background: transparent;
+    background: transparent;
 }
 window#waybar.empty #window {
-  background: none
+    background: none
 }
 
 #battery,
 #clock,
 #cpu,
-#custom-launcher,
-#custom-uptime,
-#custom-updates,
-#memory,
-#wireplumber,
-#tray,
-#custom-weather,
 #custom-notification,
+#custom-updates,
+#custom-weather,
+#memory,
+#pulseaudio,
+#tray,
 #window,
 #workspaces {
-  margin: 5px 0px 0px 5px;
-  padding: 0px 10px;
-  background: @background;
+    margin: 5px 0px 0px 5px;
+    padding: 0px 10px;
+    background: @background;
 }
 
 #workspaces {
-  padding: 0px;
-  color: @color1;
+    padding: 0px;
+    color: @color1;
 }
 #workspaces button {
-  padding: 0px 5px;
-  margin: 4px 3px;
-  background: @background;
-  font-weight: bold;
-  border-radius: 5px;
-  transition: all 0.1s;
+    padding: 0px 5px;
+    margin: 4px 3px;
+    background: @background;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.1s;
 }
 #workspaces button.active {
-  background: @color1;
-  min-width: 40px;
+    background: @color1;
+    min-width: 40px;
 }
 
-#custom-launcher {
-  color: @arch;
-  font-size: 20px;
-  padding-right: 5px;
-  margin-right: 0px;
-  margin-left: 11px;
+/* The left and right corner modules */
+#clock {
+    margin-left: 10px;
 }
 #tray {
-  margin-right: 11px;
+    margin-right: 10px;
 }
-
-/* Group styling for battery, weather, and volume */
-#battery,
-#custom-notification,
-#wireplumber {
-  margin: 5px -20px 0px 0px; /* Remove left margin to merge together */
-  padding: 0px 10px;
-  background: @background;
-  border-radius: 10px; /* Middle element, no rounding */
-}
-
-#battery,
-#wireplumber {
-  border-radius: 0px; /* Middle element, no rounding */
-}
-#wireplumber {
-  border-radius: 10px 0px 0px 10px; /* Middle element, no rounding */
-}
-
 #custom-notification {
-  padding-left: 0px;
-  padding-right: 15px;
-  border-radius: 0px 10px 10px 0px; /* Middle element, no rounding */
-  margin-right: 0px;
-}
-#clock {
-  margin-left: 11px;
+    padding-left: 0px;
+    padding-right: 1px;
 }

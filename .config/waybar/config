@@ -1,21 +1,20 @@
 {
     "layer": "top",
+    "reload_style_on_change" : true,
         "modules-left": [
             "clock",
-            "custom/weather",
-            "custom/updates",
-        ],
-        "modules-center": [
             "hyprland/workspaces",
+            "custom/weather",
         ],
+        "modules-center": ["hyprland/window"],
         "modules-right": [
-            "wireplumber",
-            "battery",
             "custom/notification",
+            "pulseaudio",
+            "battery",
             "tray",
         ],
 
-        "wireplumber": {
+        "pulseaudio": {
             "format": "{icon} {volume}%",
             "format-icons": ["", "", ""],
             "format-muted": "{icon}x",
@@ -65,7 +64,7 @@
         },
 
         "clock": {
-            "format": " {:%I:%M}",
+            "format": "<b>{:%p %I:%M}</b>",
             "format-alt": "{:%A, %B %d, %Y (%R)}",
             "tooltip-format": "<tt><small>{calendar}</small></tt>",
             "calendar": {
@@ -108,7 +107,7 @@
 
         "custom/weather":{
             "format": "{} ",
-            "exec": "sh ~/.local/bin/tenki",
+            "exec": "curl -s 'https://wttr.in/Jakarta?format=1' | tr -d + | xargs echo -n",
             "tooltip-format": "Jakarta: {}",
             "interval": 60,
         },
@@ -125,24 +124,26 @@
             "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
             "interval": 60,
         },
+
+
         "custom/notification": {
             "tooltip": false,
             "format": " {icon}",
             "format-icons": {
-                "notification": "󱅫",
-                "none": "",
-                "dnd-notification": "",
-                "dnd-none": "󰂛",
+                "notification": "󱅫 ",
+                "none": " ",
+                "dnd-notification": " ",
+                "dnd-none": "󰂛 ",
                 "inhibited-notification": " ",
-                "inhibited-none": "",
+                "inhibited-none": " ",
                 "dnd-inhibited-notification": " ",
                 "dnd-inhibited-none": " "
             },
             "return-type": "json",
             "exec-if": "which swaync-client",
             "exec": "swaync-client -swb",
-            "on-click": "sleep 0.1 && swaync-client -t -sw",
-            "on-click-right": "sleep 0.1 && swaync-client -d -sw",
+            "on-click": "swaync-client -t -sw",
+            "on-click-right": "swaync-client -d -sw",
             "escape": true
         }
 }
