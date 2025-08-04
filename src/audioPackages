@@ -10,6 +10,7 @@ packages_pulseaudio=(
 )
 
 packages_pipewire=(
+    "pavucontrol"
     "pipewire"
     "pipewire-alsa"
     "wireplumber"
@@ -17,10 +18,7 @@ packages_pipewire=(
 
 case $AUDIO in
     "pulseaudio") packages="packages_pulseaudio" ;;
-    "pipewire")
-        packages="packages_pipewire"
-	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	flatpak install flathub com.saivert.pwvucontrol ;;
+    "pipewire") packages="packages_pipewire" ;;
 esac
 
 aptInstall "${packages[@]}"
