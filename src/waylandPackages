@@ -2,6 +2,7 @@
 
 # Import function from src/aptInstall 
 source ./aptInstall
+source ./configs
 
 packages=(
     "brightnessctl"
@@ -21,3 +22,9 @@ packages=(
 
 # Install using imported function  from src/aptInstall
 aptInstall "${packages[@]}"
+
+git clone "https://github.com/hyprwm/Hyprland"
+cd Hyprland
+make all && sudo make install
+cd -
+rm -fr Hyprland

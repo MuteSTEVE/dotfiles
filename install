@@ -1,0 +1,7 @@
+#!/bin/bash
+
+bash src/dependencies
+bash src/audioPackages
+bash src/fonts
+bash src/waylandPackages
+bash src/japanesePackages

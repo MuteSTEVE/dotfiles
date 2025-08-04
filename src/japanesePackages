@@ -29,4 +29,5 @@ tar -xvf anki-launcher-$ANKI_VERSION-linux.tar.zst
 cd anki-launcher-$ANKI_VERSION-linux/
 chmod +x install.sh
 ./install.sh
+cd -
 rm -fr anki-launcher-$ANKI_VERSION-linux/
