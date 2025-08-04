@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# src/aptInstall
+
+aptInstall() {
+    local packages=("$@")
+    local packages_available=()
+    local packages_unavailable=()
+
+    for name in "${packages[@]}"
+    do
+        if apt-cache show "^$name.*" &>/dev/null; then
+            packages_available+=("$name")
+        else
+            echo "Package not found: $name"
+            packages_unavailable+=("$name")
+        fi
+    done
+
+    if [ ${#packages_available[@]} -eq 0 ]; then
+        echo "No valid packages found to install."
+    fi
+
+    echo "Installing ${#packages_available[@]} packages..."
+    sudo apt install -y "${packages_available[@]}"
+}

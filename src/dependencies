@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Import function from src/aptInstall 
+. ./aptInstall
+
 packages=(
     "build-essential"
     "cmake"
@@ -92,4 +95,5 @@ packages=(
     "xwayland"
 )
 
-sudo apt install -y "${packages[@]}"
+# Install using imported function  from src/aptInstall
+aptInstall "${packages[@]}"
