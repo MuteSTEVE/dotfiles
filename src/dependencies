@@ -8,7 +8,6 @@ packages=(
     "cmake"
     "cmake-extras"
     "curl"
-    "flatpak"
     "gettext"
     "gir1.2-graphene-1.0"
     "git"
@@ -83,6 +82,7 @@ packages=(
     "ninja-build"
     "openssl"
     "psmisc"
+    "python3"
     "python3-mako"
     "python3-markdown"
     "python3-markupsafe"
@@ -99,6 +99,3 @@ packages=(
 
 # Install using imported function  from src/aptInstall
 aptInstall "${packages[@]}"
-
-# Enable flathubrepos
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
