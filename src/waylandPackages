@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Import function from src/aptInstall 
+source ./aptInstall
+
+packages=(
+    "brightnessctl"
+    "cliphist"
+    "grim"
+    "kitty"
+    "pavucontrol"
+    "pipewire"
+    "slurp"
+    "sway-notification-center"
+    "waybar"
+    "wget"
+    "wl-clipboard"
+    "xdg-user-dirs"
+    "xdg-utils"
+)
+
+# Install using imported function  from src/aptInstall
+aptInstall "${packages[@]}"

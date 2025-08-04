@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# src/aptInstall
-
 aptInstall() {
     local packages=("$@")
     local packages_available=()
@@ -9,7 +7,7 @@ aptInstall() {
 
     for name in "${packages[@]}"
     do
-        if apt-cache show "^$name.*" &>/dev/null; then
+        if apt-cache search --names-only "^$name.*" &>/dev/null; then
             packages_available+=("$name")
         else
             echo "Package not found: $name"
