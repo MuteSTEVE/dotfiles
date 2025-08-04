@@ -1,0 +1,4 @@
+#!/bin/bash
+
+AUDIO="pipewire"
+BROWSER="brave"

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Import function from src/aptInstall 
+source ./aptInstall
+source ./configs
+
+packages_pulseaudio=(
+    "pulseaudio"
+    "pavucontrol"
+)
+
+packages_pipewire=(
+    "pipewire"
+    "pipewire-alsa"
+    "wireplumber"
+)
+
+case $AUDIO in
+    "pulseaudio") packages="packages_pulseaudio" ;;
+    "pipewire")
+        packages="packages_pipewire"
+	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+	flatpak install flathub com.saivert.pwvucontrol ;;
+esac
+
+aptInstall "${packages[@]}"
