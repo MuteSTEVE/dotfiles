@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+list_pacman=(
+    "base"
+    "base-devel"
+    "brightnessctl"
+    "cmake"
+    "fzf"
+    "lazygit"
+    "man"
+    "make"
+    "neovim"
+    "npm"
+    "pacman-contrib"
+    "ripgrep"
+    "tmux"
+    "udiskie"
+    "udisks2"
+    "unzip"
+    "wget"
+    "yazi"
+)
+
+operation_with -p "${list_pacman[@]}"
+
+nvim_DIR="$HOME/.config/nvim/"
+if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
+    clone_git https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}"
+fi
