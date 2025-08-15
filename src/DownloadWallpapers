@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+WALLS=(
+    # YTTA
+    "https://w.wallhaven.cc/full/8o/wallhaven-8opwv2.png" # arisu_(blue_archive)
+    "https://w.wallhaven.cc/full/5g/wallhaven-5gyjw3.jpg" # arisu_(blue_archive)
+    "https://w.wallhaven.cc/full/1k/wallhaven-1klez3.png" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/d6/wallhaven-d62oog.png" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9gzvm.jpg" # izuna_(blue_archive)
+    "https://w.wallhaven.cc/full/2y/wallhaven-2yxpy6.jpg" # koyuki_(blue_archive)
+    "https://w.wallhaven.cc/full/85/wallhaven-85ekpy.png" # michiru_(blue_archive)
+    "https://w.wallhaven.cc/full/rr/wallhaven-rrep8j.jpg" # momoi_(blue_archive)
+    "https://w.wallhaven.cc/full/p9/wallhaven-p9xqpm.jpg" # momoi_(blue_archive) midori_(blue_archive)
+    "https://w.wallhaven.cc/full/we/wallhaven-wel3l7.jpg" # momoi_(blue_archive) midori_(blue_archive)
+    "https://w.wallhaven.cc/full/9d/wallhaven-9dwr8x.png" # mutsuki_(blue_archive)
+    "https://w.wallhaven.cc/full/zy/wallhaven-zyrmpg.png" # mutsuki_(blue_archive)
+    "https://w.wallhaven.cc/full/gp/wallhaven-gp2xol.png" # mutsuki_(blue_archive)
+)
+
+wallpaper_DIR=$HOME/Pictures/wallpapers/
+if [[ ! -d "$wallpaper_DIR" ]] || [[ -z "$(ls -A "$wallpaper_DIR")" ]]; then
+    mkdir -p "$wallpaper_DIR"
+    for img in "${WALLS[@]}"; do
+        curl -O --output-dir "$wallpaper_DIR" "${img}" &>/dev/null
+        echo -e "[WP] Downloading wallpaper $(basename ${img})"
+    done
+fi
