@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## Import function from src/InstallFunc
-source ./InstallFunc
+source src/InstallFunc
 
 list_pacman=(
     "fcitx5"
@@ -13,7 +13,7 @@ list_pacman=(
     "mpv"
 )
 
-local list_yay=(
+list_yay=(
     "anki-bin"
 )
 
@@ -21,7 +21,7 @@ local list_yay=(
 operation_with -p "${list_pacman[@]}"
 operation_with -y "${list_yay[@]}"
 
-local mpv_DIR=$HOME/.config/mpv/scripts/
+mpv_DIR=$HOME/.config/mpv/scripts/
 if [[ ! -d "$mpv_DIR" ]] || [[ -z "$(ls -A "$mpv_DIR")" ]]; then
     mkdir -p "$mpv_DIR"
     git clone 'https://github.com/Ajatt-Tools/mpvacious.git' "${mpv_DIR}/subs2srs"

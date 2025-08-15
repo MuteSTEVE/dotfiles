@@ -47,18 +47,18 @@ operation_with() {
     do
         log_message "CHECKING" "${package}" ""
 
-	if ! "$installWith" -Ss "${package}" &>/dev/null; then
+	if ! $installWith -Ss "${package}" &>/dev/null; then
 	    log_message "WARNING" "${package}" "not found"
 	    continue
 	fi
-        if "$installWith" -Q "${package}" &>/dev/null; then
+        if $installWith -Q "${package}" &>/dev/null; then
 	    log_message "SKIP" "${package}" "already installed"
             continue
         fi
 
 	## This is where the output when installing
 	## Remove the &>/dev/null to echo the output for debugging
-        if ! "$installWith" -S --noconfirm "${package}" &>/dev/null; then
+        if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
 	    log_message "WARNING" "${package}" "check your internet connection"
             exit
         fi

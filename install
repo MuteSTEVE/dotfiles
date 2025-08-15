@@ -2,8 +2,9 @@
 
 source src/ArchDistro
 source src/CopyDirectories
+source src/DownloadWallpapers
+source src/PackagesFonts
+source src/PackagesEssential
 source src/PackagesAudio
 source src/PackagesDesktop
-source src/PackagesEssential
-source src/PackagesFonts
 source src/PackagesJapanese

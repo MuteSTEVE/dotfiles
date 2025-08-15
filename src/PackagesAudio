@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ## Import function from src/InstallFunc
-source ./InstallFunc
-source ./configs
+source src/InstallFunc
+source src/configs
 
 list_pipewire=(
     "pipewire"
@@ -17,6 +17,7 @@ list_pulseaudio=(
     "pulseaudio-bluetooth"
 )
 
+declare -n packages
 case $AUDIO in
     "pulseaudio") packages="list_pulseaudio" ;;
     "pipewire") packages="list_pipewire" ;;

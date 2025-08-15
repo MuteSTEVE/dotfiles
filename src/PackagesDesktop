@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-
 ## Import function and configuration from src/
-source ./InstallFunc
-source ./configs
+source src/InstallFunc
+source src/configs
 
 list_pacman=(
     "grim"
@@ -20,8 +19,8 @@ list_yay=(
     "python-pywal16"
     "rofi-wayland"
     "wl-color-picker"
-    "zen-browser-bin"
 )
+list_yay+=$BROWSER
 
 case $DESKTOP in
     "hyprland")

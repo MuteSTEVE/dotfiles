@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## Import function from src/InstallFunc
-source ./InstallFunc
+source src/InstallFunc
 
 list_pacman=(
     "base"
