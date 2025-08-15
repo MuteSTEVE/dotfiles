@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+## Import function from src/InstallFunc
+source src/InstallFunc
+source src/configs
+
+list_pipewire=(
+    "pipewire"
+    "pipewire-alsa"
+    "wireplumber"
+)
+
+list_pulseaudio=(
+    "pavucontrol"
+    "pulseaudio"
+    "pulseaudio-alsa"
+    "pulseaudio-bluetooth"
+)
+
+declare -n packages
+case $AUDIO in
+    "pulseaudio") packages="list_pulseaudio" ;;
+    "pipewire") packages="list_pipewire" ;;
+esac
+
+## Artix linux repos have pwvucontrol
+if [[ $DISTRO == "artix" ]]; then
+    list_pipewire+=("pwvucontrol")
+fi
+
+## Install using imported function  from src/InstallFunc
+operation_with -p "${packages[@]}"

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+## Import function from src/InstallFunc
+source src/InstallFunc
+
+list_pacman=(
+    "base"
+    "base-devel"
+    "brightnessctl"
+    "cmake"
+    "fzf"
+    "lazygit"
+    "man"
+    "make"
+    "neovim"
+    "npm"
+    "pacman-contrib"
+    "ripgrep"
+    "tmux"
+    "udiskie"
+    "udisks2"
+    "unzip"
+    "wget"
+    "yazi"
+)
+
+## Install using imported function  from src/InstallFunc
+operation_with -p "${list_pacman[@]}"
+
+nvim_DIR="$HOME/.config/nvim/"
+if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
+    git clone https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}" &>/dev/null
+fi

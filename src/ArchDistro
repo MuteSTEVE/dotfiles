@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Exclusive to arch
+family=("arch" "artix" "endeavouros" "manjaro" "garuda")
+distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
+
+if [[ ! ${family[@]} =~ $distro ]]; then
+    echo -e "Sorry, Arch or Arch-based only"
+    exit
+fi
+#if [[ "artix" == $distro ]]; then
+#    sudo cat >> /etc/pacman.conf << EOF
+#[extra]
+#Include = /etc/pacman.d/mirrorlist-arch
+#
+#[multilib]
+#Include = /etc/pacman.d/mirrorlist-arch
+#EOF
+#    sudo pacman-key --populate archlinux
+#fi

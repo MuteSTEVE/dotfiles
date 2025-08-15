@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+## Import function and configuration from src/
+source src/InstallFunc
+source src/configs
+
+list_pacman=(
+    "grim"
+    "kitty"
+    "libnotify"
+    "slurp"
+    "swappy"
+    "swaync"
+    "waybar"
+    "wl-clipboard"
+    "xorg-xwayland"
+)
+
+list_yay=(
+    "python-pywal16"
+    "rofi-wayland"
+    "wl-color-picker"
+    $BROWSER
+)
+
+case $DESKTOP in
+    "hyprland")
+        list_pacman+=("hyprland" "hyprpaper" "xdg-desktop-portal-hyprland") ;;
+    "sway")
+        list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
+esac
+
+## Swayfx need a libsystemd, which Artix linux doesn't have :(
+if [[ $DISTRO != "artix" ]]; then
+    list_yay+=("swayfx")
+fi
+
+## Install using imported function  from src/InstallFunc
+operation_with -p "${list_pacman[@]}"
+operation_with -y "${list_yay[@]}"

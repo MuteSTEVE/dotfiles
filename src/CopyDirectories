@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+list=(
+    ".bashrc"
+    ".profile"
+    ".gitconfig"
+    ".inputrc"
+    ".config/"
+    ".local/"
+)
+username_template=(
+    "$HOME/.config/kitty/kitty.conf"
+    "$HOME/.config/swappy/config"
+    "$HOME/.config/swaync/style.css"
+    "$HOME/.config/waybar/style.css"
+)
+
+for copy in "${list[@]}"; do
+    cp -r "$PWD/${copy}" $HOME/
+done
+chmod +x $HOME/.local/bin/*
+
+for username in "${username_template[@]}"; do
+    sed -i "s|USERNAME_HERE|$USER|" "$username"
+done
