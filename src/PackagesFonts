@@ -12,5 +12,5 @@ list_yay=(
     "ttf-liberation"
 )
 
-## Install using imported function  from src/aptInstall
+## Install using imported function  from src/InstallFunc
 operation_with -y "${list_yay[@]}"

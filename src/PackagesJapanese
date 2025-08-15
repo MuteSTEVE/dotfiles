@@ -17,6 +17,7 @@ local list_yay=(
     "anki-bin"
 )
 
+## Install using imported function  from src/InstallFunc
 operation_with -p "${list_pacman[@]}"
 operation_with -y "${list_yay[@]}"
 

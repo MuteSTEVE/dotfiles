@@ -24,7 +24,7 @@ list_pacman=(
     "yazi"
 )
 
-## Install using imported function  from src/aptInstall
+## Install using imported function  from src/InstallFunc
 operation_with -p "${list_pacman[@]}"
 
 nvim_DIR="$HOME/.config/nvim/"

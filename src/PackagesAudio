@@ -27,5 +27,5 @@ if [[ $DISTRO == "artix" ]]; then
     list_pipewire+=("pwvucontrol")
 fi
 
-## Install using imported function  from src/aptInstall
+## Install using imported function  from src/InstallFunc
 operation_with -p "${packages[@]}"
