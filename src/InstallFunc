@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+## portable log message
+log_message() {
+    local logType="$1"
+    local logPackage="$2"
+    local logStatus="$3"
+
+    local logType_padding="10"
+    local logPackage_padding="30"
+
+    printf "%-*s %-*s %s\n" "$logType_padding" "[$logType]" "$logPackage_padding" "$logPackage" "$logStatus"
+}
+
+## Install with yay or pacman
+operation_with() {
+    ## Check if yay is installed first
+    ## Because some of the packages have to be installed from the AUR
+    if ! command -v yay &>/dev/null; then
+        local yay_DIR="/tmp/yay"
+
+        git clone https://aur.archlinux.org/yay-bin.git "${yay_DIR}" &>/dev/null
+        echo -e "[YAY] Yay is not installed, installing Yay"
+
+        ## Subshell won't affect the current shell behaviour such as $PWD location
+	## Just search it on the internet to learn more if you were interested
+        ( cd "$yay_DIR" || exit
+        makepkg -si &>/dev/null
+        ) && rm -rf "$yay_DIR"
+    fi
+
+    ## Here comes the magic
+    local flag="$1"
+    shift
+    local list=("$@")
+
+    case "$flag" in
+        "-y")
+	    local installWith="yay"
+	    local installName="YAY" ;;
+        "-p")
+	    local installWith="sudo pacman"
+	    local installName="PACMAN" ;;
+    esac
+
+    for package in "${list[@]}"
+    do
+        log_message "[CHECKING]" "${package}" ""
+
+	if ! "$installWith" -Ss "${package}" &>/dev/null; then
+	    log_message "WARNING" "${package}" "not found"
+	    continue
+	fi
+        if "$installWith" -Q "${package}" &>/dev/null; then
+	    log_message "SKIP" "${package}" "already installed"
+            continue
+        fi
+
+	## This is where the output when installing
+	## Remove the &>/dev/null to echo the output for debugging
+        if ! "$installWith" -S --noconfirm "${package}" &>/dev/null; then
+	    log_message "WARNING" "${package}" "check your internet connection"
+            exit
+        fi
+
+	log_message "$installName" "${package}" "installing"
+	log_message "DONE" "${package}" "has been installed"
+    done
+}
