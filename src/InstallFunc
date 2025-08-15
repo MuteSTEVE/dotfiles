@@ -45,7 +45,7 @@ operation_with() {
 
     for package in "${list[@]}"
     do
-        log_message "[CHECKING]" "${package}" ""
+        log_message "CHECKING" "${package}" ""
 
 	if ! "$installWith" -Ss "${package}" &>/dev/null; then
 	    log_message "WARNING" "${package}" "not found"
