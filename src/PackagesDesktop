@@ -19,8 +19,8 @@ list_yay=(
     "python-pywal16"
     "rofi-wayland"
     "wl-color-picker"
+    $BROWSER
 )
-list_yay+=$BROWSER
 
 case $DESKTOP in
     "hyprland")
