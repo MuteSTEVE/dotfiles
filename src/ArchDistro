@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Exclusive to arch
-local family=("arch" "artix" "endeavouros" "manjaro" "garuda")
-local distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
+family=("arch" "artix" "endeavouros" "manjaro" "garuda")
+distro=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)
 
 if [[ ! ${family[@]} =~ $distro ]]; then
     echo -e "Sorry, Arch or Arch-based only"
