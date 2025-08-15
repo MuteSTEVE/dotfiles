@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
 source src/ArchDistro
+source src/CopyDirectories
+source src/PackagesAudio
+source src/PackagesDesktop
 source src/PackagesEssential
+source src/PackagesFonts
+source src/PackagesJapanese
