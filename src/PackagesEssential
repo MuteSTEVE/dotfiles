@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+## Import function from src/InstallFunc
+source ./InstallFunc
+
 list_pacman=(
     "base"
     "base-devel"
@@ -21,9 +24,10 @@ list_pacman=(
     "yazi"
 )
 
+## Install using imported function  from src/aptInstall
 operation_with -p "${list_pacman[@]}"
 
 nvim_DIR="$HOME/.config/nvim/"
 if [[ ! -d "$nvim_DIR" ]] || [[ -z "$(ls -A "$nvim_DIR")" ]]; then
-    clone_git https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}"
+    git clone https://github.com/MuteSTEVE/nvim.git "${nvim_DIR}" &>/dev/null
 fi

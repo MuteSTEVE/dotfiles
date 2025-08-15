@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+## Import function from src/InstallFunc
+source ./InstallFunc
+
+list_yay=(
+    "noto-fonts-cjk" 
+    "noto-fonts-emoji" 
+    "ttf-font-awesome"
+    "ttf-hack-nerd"
+    "ttf-jetbrains-mono-nerd"
+    "ttf-liberation"
+)
+
+## Install using imported function  from src/aptInstall
+operation_with -y "${list_yay[@]}"
