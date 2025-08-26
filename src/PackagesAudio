@@ -19,8 +19,8 @@ list_pulseaudio=(
 
 declare -n packages
 case $AUDIO in
-    "pulseaudio") packages="list_pulseaudio" ;;
-    "pipewire") packages="list_pipewire" ;;
+    pulseaudio) packages="list_pulseaudio" ;;
+    pipewire) packages="list_pipewire" ;;
 esac
 
 ## Artix linux repos have pwvucontrol

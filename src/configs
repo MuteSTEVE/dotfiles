@@ -1,6 +1,5 @@
 #!/bin/bash
 
-AUDIO="pipewire"
+AUDIO="pulseaudio"
 BROWSER="brave-bin"
-DESKTOP="sway"
 DISTRO=$(grep '^ID=' /etc/os-release | cut -d '=' -f2)

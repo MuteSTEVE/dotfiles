@@ -16,6 +16,7 @@ log_message() {
 operation_with() {
     ## Check if yay is installed first
     ## Because some of the packages have to be installed from the AUR
+    ## *Nah it's because i'm too lazy doing it manually
     if ! command -v yay &>/dev/null; then
         local yay_DIR="/tmp/yay"
 
@@ -23,7 +24,7 @@ operation_with() {
         echo -e "[YAY] Yay is not installed, installing Yay"
 
         ## Subshell won't affect the current shell behaviour such as $PWD location
-	## Just search it on the internet to learn more if you were interested
+	    ## Just search it on the internet to learn more if you were interested
         ( cd "$yay_DIR" || exit
         makepkg -si &>/dev/null
         ) && rm -rf "$yay_DIR"
@@ -35,35 +36,34 @@ operation_with() {
     local list=("$@")
 
     case "$flag" in
-        "-y")
-	    local installWith="yay"
-	    local installName="YAY" ;;
-        "-p")
-	    local installWith="sudo pacman"
-	    local installName="PACMAN" ;;
+        -y)
+	        local installWith="yay"
+	        local installName="YAY" ;;
+        -p)
+	        local installWith="sudo pacman"
+	        local installName="PACMAN" ;;
     esac
 
     for package in "${list[@]}"
     do
         log_message "CHECKING" "${package}" ""
 
-	if ! $installWith -Ss "${package}" &>/dev/null; then
-	    log_message "WARNING" "${package}" "not found"
-	    continue
-	fi
+        ## This is where the output when installing
+        ## Remove the &>/dev/null to echo the output for debugging
+	    if ! $installWith -Ss "${package}" &>/dev/null; then
+	        log_message "WARNING" "${package}" "not found"
+	        continue
+	    fi
         if $installWith -Q "${package}" &>/dev/null; then
 	    log_message "SKIP" "${package}" "already installed"
             continue
         fi
-
-	## This is where the output when installing
-	## Remove the &>/dev/null to echo the output for debugging
         if ! $installWith -S --noconfirm "${package}" &>/dev/null; then
 	    log_message "WARNING" "${package}" "check your internet connection"
             exit
         fi
 
-	log_message "$installName" "${package}" "installing"
-	log_message "DONE" "${package}" "has been installed"
+	    log_message "$installName" "${package}" "installing"
+	    log_message "DONE" "${package}" "has been installed"
     done
 }
