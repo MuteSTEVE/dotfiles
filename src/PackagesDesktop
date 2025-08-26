@@ -1,37 +1,32 @@
 #!/usr/bin/env bash
+
 ## Import function and configuration from src/
 source src/InstallFunc
 source src/configs
 
 list_pacman=(
-    "grim"
     "kitty"
-    "libnotify"
-    "slurp"
-    "swappy"
-    "swaync"
-    "waybar"
-    "wl-clipboard"
-    "xorg-xwayland"
+    "nitrogen"
+    "sxhkd"
+    "xclip"
+    "xorg"
+    "xorg-xinit"
 )
 
 list_yay=(
     "python-pywal16"
-    "rofi-wayland"
-    "wl-color-picker"
     $BROWSER
 )
 
-case $DESKTOP in
-    "hyprland")
-        list_pacman+=("hyprland" "hyprpaper" "xdg-desktop-portal-hyprland") ;;
-    "sway")
-        list_pacman+=("swaybg" "xdg-desktop-portal-wlr")
-esac
-
-## Swayfx need a libsystemd, which Artix linux doesn't have :(
-if [[ $DISTRO != "artix" ]]; then
-    list_yay+=("swayfx")
+## Artix linux does have xlibre, which is replacement of xorg
+if [[ $DISTRO == "artix" ]]; then
+    new_list=()
+    for value in "${list_pacman[@]}"; do
+        [[ $value == "xorg" ]] && continue  ## I hate 3 level deep nesting
+        new_list+=("$value")
+    done
+    list_pacman=("${new_list[@]}")
+    unset new_list
 fi
 
 ## Install using imported function  from src/InstallFunc

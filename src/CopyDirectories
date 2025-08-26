@@ -2,7 +2,7 @@
 
 list=(
     ".bashrc"
-    ".profile"
+    ".bash_profile"
     ".gitconfig"
     ".inputrc"
     ".config/"
@@ -10,9 +10,6 @@ list=(
 )
 username_template=(
     "$HOME/.config/kitty/kitty.conf"
-    "$HOME/.config/swappy/config"
-    "$HOME/.config/swaync/style.css"
-    "$HOME/.config/waybar/style.css"
 )
 
 for copy in "${list[@]}"; do
